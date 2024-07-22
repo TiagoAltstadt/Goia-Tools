@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Goia Tools",
+  "version": "1.2",
+  "description": "Shows a floating window for specific domains, By Tiago Altstadt",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "icons": {
+    "17": "icons/dev-icon.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "17": "icons/dev-icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
