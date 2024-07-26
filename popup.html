@@ -3,11 +3,13 @@
 
 <head>
     <title>Goia Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             padding: 20px;
             width: 300px;
-            font-family: monospace;
+            font-family: 'Nunito', sans-serif;
             font-size: medium;
         }
 
@@ -15,6 +17,13 @@
             width: fit-content;
             margin: auto;
             margin-bottom: 12px;
+        }
+
+        .path-subtitle {
+            font-size: 0.8em;
+            color: #555;
+            margin: 5px auto;
+            width: fit-content;
         }
 
         .credits {
@@ -35,46 +44,11 @@
             padding: 8px;
         }
 
-
-
-        .domain-list {
-            margin-top: 20px;
-            background-color: #d1d1d1;
-            padding: 2px 11px;
-            border-radius: 8px;
-        }
-
-        .domain-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: solid gray 1px;
-            padding: 5px 0;
-        }
-
-        .domain-item button {
-            padding: 2px 5px;
-            width: fit-content;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            cursor: pointer;
-            margin-bottom: 5px;
-            border: 2px solid black;
-            background-color: rgba(225, 0, 0, 0.21);
-
-        }
-
-        .domain-item button:hover {
-            background-color: rgba(225, 0, 0, 0.407);
-        }
-
         button {
             width: fit-content;
             border-radius: 12px;
             padding: 8px;
             border: none;
-            cursor: pointer;
             cursor: pointer;
             margin-bottom: 5px;
             border: 2px solid black;
@@ -84,85 +58,77 @@
             background-color: rgb(166, 166, 166);
         }
 
-        #addProdDomain {
-            border-color: red;
-        }
-
-        #addProdDomain:hover {
-            background-color: rgba(255, 0, 0, 0.21);
-        }
-
-        #addStageDomain {
-            border-color: forestgreen
-        }
-
-        #addStageDomain:hover {
-            background-color: rgba(34, 139, 34, 0.21)
-        }
-
-        #addLiveDomain {
-            border-color: rgb(238, 255, 0);
-        }
-
-        #addLiveDomain:hover {
-            background-color: rgb(238, 255, 0, 0.21)
-        }
-
-        #clearDomains {
+        #clearData {
             border-color: red;
             width: 100%;
         }
 
-        #addDomainsFromFile {
+        #addDataFromFile {
             border-color: green;
             width: 100%;
             margin-top: 5px;
         }
-        
-        #exportDomains {
+
+        #exportData {
             border-color: blue;
             width: 100%;
-            margin-top: 5px
+            margin-top: 5px;
         }
 
-        #liveList {}
+        .component {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
 
-        #prodList {}
+        .component h3 {
+            font-size: 16px;
+            margin: 8px auto;
+            width: fit-content;
+        }
 
-        #stageList {}
+        .component span {
+            height: fit-content;
+        }
+
+        .component .button-row {
+            display: flex;
+            margin: auto;
+            width: fit-content;
+            align-items: center;
+        }
+
+        .component button {
+            margin: 2px;
+        }
+
+        .component-container {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
+
 </head>
 
 <body>
     <h2 class="title">
         Goia Tools
     </h2>
-    <input type="text" id="domainInput" placeholder="Enter domain">
-
-    <div style="display: flex; justify-content: space-evenly;">
-        <button id="addProdDomain">Add to PROD</button>
-        <button id="addStageDomain">Add to STAGE</button>
-        <button id="addLiveDomain">Add to LIVE</button>
+    <input type="text" id="searchInput" placeholder="Search components">
+    <div id="componentContainer" class="component-container">
+        <!-- Components will be loaded here -->
     </div>
-
     <div style="display: flex; justify-content: space-evenly; flex-direction: column; margin-top: 8px;">
-        <button id="clearDomains"> Clear All Domains </button>
-        <button id="addDomainsFromFile"> Add Domains from File </button>
-        <button id="exportDomains"> Export </button>
-    </div>
-
-    <div class="domain-list" id="liveList">
-        <h4>LIVE Domains</h4>
-    </div>
-    <div class="domain-list" id="prodList">
-        <h4>PROD Domains</h4>
-    </div>
-    <div class="domain-list" id="stageList">
-        <h4>STAGE Domains</h4>
+        <button id="clearData"> Clear All Data </button>
+        <button id="addDataFromFile"> Add Data from File </button>
+        <button id="exportData"> Export </button>
     </div>
     <div class="credits">
-        Por: Tiago Altsatdt
+        Por: Tiago Altstadt
     </div>
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
     <script src="popup.js"></script>
 </body>
 
