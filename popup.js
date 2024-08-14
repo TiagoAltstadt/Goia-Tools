@@ -139,7 +139,7 @@ function toggleQuickActions() {
 
 function toggleEditButton() {
   const editButton = document.querySelector(".edit-button");
-  editButton.style.display = 'block'
+  editButton.style.display = "block";
   if (editButton) {
     editButton.style.display =
       editButton.style.display === "block" ? "none" : "block";
@@ -260,9 +260,9 @@ async function saveEdit(component, form) {
   const components = await getComponentsFromStorage();
   console.log("Components retrieved from storage:", components);
 
-  // Ensure you are updating the right component in the list
+  // Ensure you are updating the right component in the list by ID
   const updatedComponents = components.map((comp) =>
-    comp.name === component.name ? { ...component } : comp
+    comp.id === component.id ? { ...component } : comp
   );
   console.log("Updated components list:", updatedComponents);
 
@@ -272,6 +272,31 @@ async function saveEdit(component, form) {
   // Remove the form and re-render components
   form.remove();
   renderComponents(updatedComponents);
+}
+
+function updateComponentData(component, form) {
+  // Update the data of the component based on form values
+  component.name = form.querySelector("input[placeholder='Name']").value;
+  component.Path = form.querySelector("input[placeholder='Path']").value;
+  component.Live = form.querySelector("input[placeholder='Live URL']").value;
+  component.AEM_Prod = form.querySelector(
+    "input[placeholder='Editor Prod URL']"
+  ).value;
+  component.AEM_Stage = form.querySelector(
+    "input[placeholder='Editor Stage URL']"
+  ).value;
+  component.VAP_Prod = form.querySelector(
+    "input[placeholder='VAP Prod URL']"
+  ).value;
+  component.VAP_Stage = form.querySelector(
+    "input[placeholder='VAP Stage URL']"
+  ).value;
+  component.Bitbucket = form.querySelector(
+    "input[placeholder='Bitbucket URL']"
+  ).value;
+  component.Jenkins = form.querySelector(
+    "input[placeholder='Jenkins URL']"
+  ).value;
 }
 
 function updateComponentData(component, form) {
@@ -338,7 +363,6 @@ async function getComponentsFromStorage() {
   return new Promise((resolve) => {
     chrome.storage.local.get(["components"], (result) => {
       const components = result.components || [];
-      console.log("Retrieved components from storage:", components);
       resolve(components);
     });
   });
