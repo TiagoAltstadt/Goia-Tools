@@ -339,8 +339,27 @@ function clearAllData() {
 }
 
 function exportData() {
-  alert("Export functionality not yet implemented.");
+  getComponentsFromStorage().then((components) => {
+    // Convert the components data to JSON format
+    const dataStr = JSON.stringify(components, null, 2);
+    
+    // Create a Blob object with the JSON data
+    const blob = new Blob([dataStr], { type: "application/json" });
+    
+    // Create a link element to trigger the download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "GoiaTools-Data.json";
+    
+    // Append the link to the document body and simulate a click to start the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Remove the link from the document body
+    document.body.removeChild(link);
+  });
 }
+
 
 function filterComponents() {
   const searchText = document.getElementById("searchInput").value.toLowerCase();

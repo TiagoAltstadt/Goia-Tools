@@ -191,3 +191,18 @@ input[type="file"] {
   font-family: "Nunito", sans-serif;
   font-size: 0.9em;
 }
+
+
+/* content.js */
+.floating-badge {
+    position: fixed;
+    right: 10px;
+    /* top: 10px; */
+    height: fit-content;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    cursor: move;
+    z-index: 9999;
+}
