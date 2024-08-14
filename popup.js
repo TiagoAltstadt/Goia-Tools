@@ -1,203 +1,254 @@
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("clearData").addEventListener("click", clearAllData);
-    document.getElementById("addDataFromFile").addEventListener("click", () => document.getElementById("fileInput").click());
-    document.getElementById("exportData").addEventListener("click", exportData);
-    document.getElementById("searchInput").addEventListener("input", filterComponents);
-
-    document.getElementById("fileInput").addEventListener("change", function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                try {
-                    const data = JSON.parse(reader.result);
-                    if (Array.isArray(data.urls) && Array.isArray(data.urls[0])) {
-                        saveDataToStorage(data.urls[0]);
-                        renderComponents(data.urls[0]);
-                    } else {
-                        alert("Invalid file format.");
-                    }
-                } catch (e) {
-                    console.error("Error parsing JSON file:", e);
-                    alert("Error reading file.");
-                }
-            };
-            reader.readAsText(file);
-        }
-    });
-
-    loadDataFromStorage();
+document.addEventListener("DOMContentLoaded", () => {
+  setupEventListeners();
+  loadDataFromStorage();
 });
 
-function createComponent(component) {
-    const container = document.createElement("div");
-    container.className = "component";
-
-    // Title
-    const title = document.createElement("h3");
-    title.textContent = component.name;
-    container.appendChild(title);
-
-    // Path Subtitle
-    if (component.Path) {
-        const pathSubtitle = document.createElement("p");
-        pathSubtitle.className = "path-subtitle";
-        pathSubtitle.textContent = component.Path;
-        container.appendChild(pathSubtitle);
-    }
-
-    // Buttons
-    const buttonContainer = document.createElement("div");
-    buttonContainer.className = "button-container";
-
-    const buttons = [
-        { id: 'Live', url: component.Live },
-        { id: 'Bitbucket', url: component.Bitbucket },
-        { id: 'Jenkins', url: component.Jenkins }
-    ];
-
-    // First row of buttons
-    const firstRow = document.createElement("div");
-    firstRow.className = "button-row";
-    buttons.forEach(btn => {
-        if (btn.url && btn.url !== "#") {
-            const button = document.createElement("button");
-            button.textContent = btn.id;
-            button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), '_blank');
-            firstRow.appendChild(button);
-        }
-    });
-    buttonContainer.appendChild(firstRow);
-
-    // Second row: Editor Prod and Editor Stage
-    const editorButtons = [
-        { id: 'Editor: Prod', url: component.AEM_Prod },
-        { id: 'Editor: Stage', url: component.AEM_Stage }
-    ];
-
-    const secondRow = document.createElement("div");
-    secondRow.className = "button-row";
-    const editorLabel = document.createElement("span");
-    editorLabel.textContent = "Editor: ";
-    secondRow.appendChild(editorLabel);
-    editorButtons.forEach(btn => {
-        if (btn.url && btn.url !== "#") {
-            const button = document.createElement("button");
-            button.textContent = btn.id.split(': ')[1];
-            button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), '_blank');
-            secondRow.appendChild(button);
-        }
-    });
-    buttonContainer.appendChild(secondRow);
-
-    // Third row: VAP Prod and VAP Stage
-    const vapButtons = [
-        { id: 'VAP: Prod', url: component.VAP_Prod },
-        { id: 'VAP: Stage', url: component.VAP_Stage }
-    ];
-
-    const thirdRow = document.createElement("div");
-    thirdRow.className = "button-row";
-    const vapLabel = document.createElement("span");
-    vapLabel.textContent = "VAP: ";
-    thirdRow.appendChild(vapLabel);
-    vapButtons.forEach(btn => {
-        if (btn.url && btn.url !== "#") {
-            const button = document.createElement("button");
-            button.textContent = btn.id.split(': ')[1];
-            button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), '_blank');
-            thirdRow.appendChild(button);
-        }
-    });
-    buttonContainer.appendChild(thirdRow);
-
-    container.appendChild(buttonContainer);
-
-    if (shouldShowLocaleMessage(component)) {
-        const localeMessage = document.createElement("div");
-        localeMessage.className = "locale-message";
-        localeMessage.textContent = "Locale message for specific domains.";
-        container.appendChild(localeMessage);
-    }
-
-    return container;
+function setupEventListeners() {
+  document.getElementById("clearData").addEventListener("click", clearAllData);
+  document
+    .getElementById("addDataFromFile")
+    .addEventListener("click", triggerFileInput);
+  document.getElementById("exportData").addEventListener("click", exportData);
+  document.getElementById("searchInput").addEventListener("input", filterComponents);
+  document.getElementById("fileInput").addEventListener("change", handleFileUpload);
 }
 
+function triggerFileInput() {
+  document.getElementById("fileInput").click();
+}
+
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (Array.isArray(data.urls) && Array.isArray(data.urls[0])) {
+          saveDataToStorage(data.urls[0]);
+          renderComponents(data.urls[0]);
+        } else {
+          alert("Invalid file format.");
+        }
+      } catch (e) {
+        console.error("Error parsing JSON file:", e);
+        alert("Error reading file.");
+      }
+    };
+    reader.readAsText(file);
+  }
+}
+
+function createComponent(component) {
+  const container = document.createElement("div");
+  container.className = "component";
+
+  container.appendChild(createTitle(component.name));
+  container.appendChild(createPathSubtitle(component.Path));
+  container.appendChild(createButtonContainer(component));
+  container.appendChild(createEditButton(component, container));
+
+  return container;
+}
+
+function createTitle(name) {
+  const title = document.createElement("h3");
+  title.textContent = name;
+  title.className = "title";
+  return title;
+}
+
+function createPathSubtitle(path) {
+  const pathSubtitle = document.createElement("div");
+  pathSubtitle.className = "path-subtitle";
+  pathSubtitle.textContent = path;
+  return pathSubtitle;
+}
+
+function createButtonContainer(component) {
+  const buttonContainer = document.createElement("div");
+  buttonContainer.className = "button-container";
+
+  const buttonGroups = {
+    Live: [{ id: "Live", url: component.Live }],
+    Editor: [
+      { id: "Prod", url: component.AEM_Prod },
+      { id: "Stage", url: component.AEM_Stage },
+    ],
+    VAP: [
+      { id: "Prod", url: component.VAP_Prod },
+      { id: "Stage", url: component.VAP_Stage },
+    ],
+  };
+
+  for (const [group, groupButtons] of Object.entries(buttonGroups)) {
+    const row = createButtonRow(group, groupButtons);
+    buttonContainer.appendChild(row);
+  }
+
+  return buttonContainer;
+}
+
+function createButtonRow(group, groupButtons) {
+  const row = document.createElement("div");
+  row.className = "button-row";
+  row.textContent = `${group}: `;
+
+  groupButtons.forEach((btn) => {
+    const button = document.createElement("button");
+    button.textContent = btn.id;
+    button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), "_blank");
+    row.appendChild(button);
+  });
+
+  return row;
+}
+
+function createEditButton(component, container) {
+  const editButton = document.createElement("button");
+  editButton.className = "edit-button";
+  editButton.textContent = "Edit";
+  editButton.onclick = () => openEditForm(component, container);
+  return editButton;
+}
+
+function openEditForm(component, container) {
+  let form = container.querySelector(".edit-form");
+  if (!form) {
+    form = createEditForm(component);
+    container.appendChild(form);
+  } else {
+    form.style.display = "block";
+  }
+}
+
+function createEditForm(component) {
+  const form = document.createElement("div");
+  form.className = "edit-form";
+
+  const fields = [
+    { label: "Name", value: component.name, placeholder: "Name" },
+    { label: "Path", value: component.Path, placeholder: "Path" },
+    { label: "Live URL", value: component.Live, placeholder: "Live URL" },
+    { label: "Editor Prod URL", value: component.AEM_Prod, placeholder: "Editor Prod URL" },
+    { label: "Editor Stage URL", value: component.AEM_Stage, placeholder: "Editor Stage URL" },
+    { label: "VAP Prod URL", value: component.VAP_Prod, placeholder: "VAP Prod URL" },
+    { label: "VAP Stage URL", value: component.VAP_Stage, placeholder: "VAP Stage URL" },
+    { label: "Bitbucket URL", value: component.Bitbucket, placeholder: "Bitbucket URL" },
+    { label: "Jenkins URL", value: component.Jenkins, placeholder: "Jenkins URL" },
+  ];
+
+  fields.forEach((field) => form.appendChild(createInputField(field)));
+  form.appendChild(createFormButtons(component, form));
+
+  return form;
+}
+
+function createInputField({ label, value, placeholder }) {
+  const labelElement = document.createElement("label");
+  labelElement.textContent = label;
+
+  const input = document.createElement("input");
+  input.value = value;
+  input.placeholder = placeholder;
+
+  const container = document.createElement("div");
+  container.appendChild(labelElement);
+  container.appendChild(input);
+
+  return container;
+}
+
+function createFormButtons(component, form) {
+  const buttonContainer = document.createElement("div");
+
+  const saveButton = document.createElement("button");
+  saveButton.textContent = "Save";
+  saveButton.onclick = () => saveEdit(component, form);
+
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "Cancel";
+  cancelButton.onclick = () => form.remove();
+
+  buttonContainer.appendChild(saveButton);
+  buttonContainer.appendChild(cancelButton);
+
+  return buttonContainer;
+}
+
+function saveEdit(component, form) {
+  updateComponentData(component, form);
+  saveDataToStorage(getComponentsFromStorage());
+  form.remove();
+  renderComponents(getComponentsFromStorage());
+}
+
+function updateComponentData(component, form) {
+  component.name = form.querySelector("input[placeholder='Name']").value;
+  component.Path = form.querySelector("input[placeholder='Path']").value;
+  component.Live = form.querySelector("input[placeholder='Live URL']").value;
+  component.AEM_Prod = form.querySelector("input[placeholder='Editor Prod URL']").value;
+  component.AEM_Stage = form.querySelector("input[placeholder='Editor Stage URL']").value;
+  component.VAP_Prod = form.querySelector("input[placeholder='VAP Prod URL']").value;
+  component.VAP_Stage = form.querySelector("input[placeholder='VAP Stage URL']").value;
+  component.Bitbucket = form.querySelector("input[placeholder='Bitbucket URL']").value;
+  component.Jenkins = form.querySelector("input[placeholder='Jenkins URL']").value;
+}
 
 function ensureAbsoluteUrl(url) {
-    if (!url || url === "#") {
-        return null; // or handle it accordingly, e.g., return an empty string
-    }
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        return "https://" + url;
-    }
-    return url;
-}
-
-function shouldShowLocaleMessage(component) {
-    const currentDomain = window.location.hostname;
-    const domainsToCheck = [
-        component.Live,
-        component.AEM_Prod,
-        component.AEM_Stage,
-        component.VAP_Prod,
-        component.VAP_Stage
-    ];
-
-    return domainsToCheck.some(url => {
-        try {
-            const absoluteUrl = ensureAbsoluteUrl(url);
-            return absoluteUrl && new URL(absoluteUrl).hostname === currentDomain;
-        } catch (e) {
-            console.warn("Invalid URL:", url);
-            return false;
-        }
-    });
+  if (!url || url === "#") return null;
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    return "https://" + url;
+  }
+  return url;
 }
 
 function clearAllData() {
-    chrome.storage.local.remove('components', () => {
-        document.getElementById("componentContainer").innerHTML = "";
-    });
+  chrome.storage.local.remove("components", () => {
+    document.getElementById("componentContainer").innerHTML = "";
+  });
 }
 
 function exportData() {
-    alert("Export functionality not yet implemented.");
+  alert("Export functionality not yet implemented.");
 }
 
 function filterComponents() {
-    const searchText = document.getElementById("searchInput").value.toLowerCase();
-    const components = document.querySelectorAll(".component");
+  const searchText = document.getElementById("searchInput").value.toLowerCase();
+  const components = document.querySelectorAll(".component");
 
-    components.forEach(component => {
-        const title = component.querySelector("h3").textContent.toLowerCase();
-        if (title.includes(searchText)) {
-            component.style.display = "";
-        } else {
-            component.style.display = "none";
-        }
-    });
+  components.forEach((component) => {
+    const title = component.querySelector("h3").textContent.toLowerCase();
+    component.style.display = title.includes(searchText) ? "" : "none";
+  });
 }
 
 function saveDataToStorage(data) {
-    chrome.storage.local.set({ components: data }, () => {
-        console.log("Data saved to storage.");
-    });
+  chrome.storage.local.set({ components: data }, () => {
+    console.log("Data saved to storage.");
+  });
 }
 
 function loadDataFromStorage() {
-    chrome.storage.local.get(['components'], (result) => {
-        if (result.components) {
-            renderComponents(result.components);
-        }
-    });
+  chrome.storage.local.get(["components"], (result) => {
+    if (result.components) {
+      renderComponents(result.components);
+    }
+  });
 }
 
 function renderComponents(components) {
-    const componentContainer = document.getElementById("componentContainer");
-    componentContainer.innerHTML = "";
-    components.forEach(component => {
-        const componentElement = createComponent(component);
-        componentContainer.appendChild(componentElement);
-    });
+  const componentContainer = document.getElementById("componentContainer");
+  componentContainer.innerHTML = "";
+  components.forEach((component) => {
+    componentContainer.appendChild(createComponent(component));
+  });
+}
+
+async function saveEdit(component, form) {
+  const components = await getComponentsFromStorage();
+  updateComponentData(component, form);
+  saveDataToStorage(components);
+  form.remove();
+  renderComponents(components);
 }

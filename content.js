@@ -3,15 +3,16 @@ function createFloatingBadge(text, bgColor, bottomOffset) {
   badge.style.position = "fixed";
   badge.style.bottom = `${bottomOffset}px`;
   badge.style.right = "10px";
-  badge.style.width = "fit-content";
-  badge.style.height = "fit-content";
+  badge.style.maxWidth = "300px";
   badge.style.backgroundColor = bgColor;
   badge.style.color = "black";
-  badge.style.padding = "10px";
-  badge.style.borderRadius = "5px";
-  badge.style.boxShadow = "rgba(0, 0, 0, 0.5) 0px 0px 10px";
+  badge.style.padding = "10px 15px";
+  badge.style.borderRadius = "8px";
+  badge.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.2)";
   badge.style.zIndex = "10000";
   badge.style.cursor = "move";
+  badge.style.fontFamily = "'Nunito', sans-serif";
+  badge.style.fontSize = "0.9em";
   badge.innerHTML = text;
 
   document.body.appendChild(badge);
@@ -48,7 +49,7 @@ function displayLocaleBadge() {
   if (htmlTag) {
       const lang = htmlTag.getAttribute("lang");
       if (lang) {
-          createFloatingBadge(`Locale: ${lang}`, "rgb(192 174 255 / 76%)", 50); // Blue background for locale badge
+          createFloatingBadge(`Locale: ${lang}`, "rgba(135, 206, 250, 0.9)", 50);
       }
   }
 }
@@ -58,7 +59,7 @@ chrome.storage.sync.get(["prodDomains", "stageDomains", "liveDomains"], function
 
   // Remove domain checking and badge creation
   // Example: If you need a static badge or specific logic, adjust here
-  
+
   // Display locale badge
   displayLocaleBadge();
 });
