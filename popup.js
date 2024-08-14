@@ -5,16 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setupEventListeners() {
   document.getElementById("clearData").addEventListener("click", clearAllData);
-  document
-    .getElementById("addDataFromFile")
-    .addEventListener("click", triggerFileInput);
+  document.getElementById("addDataFromFile").addEventListener("click", triggerFileInput);
   document.getElementById("exportData").addEventListener("click", exportData);
-  document
-    .getElementById("searchInput")
-    .addEventListener("input", filterComponents);
-  document
-    .getElementById("fileInput")
-    .addEventListener("change", handleFileUpload);
+  document.getElementById("searchInput").addEventListener("input", filterComponents);
+  document.getElementById("fileInput").addEventListener("change", handleFileUpload);
 }
 
 function triggerFileInput() {
@@ -46,6 +40,7 @@ function handleFileUpload(event) {
 function createComponent(component) {
   const container = document.createElement("div");
   container.className = "component";
+  container.id = `component-${component.id}`;
 
   container.appendChild(createTitle(component.name));
   container.appendChild(createPathSubtitle(component.Path));
@@ -60,7 +55,7 @@ function createTitle(name) {
   title.textContent = name;
   title.className = "title";
   title.onclick = () => {
-    toggleQuickActions();
+    toggleQuickActions(title);
   };
   return title;
 }
@@ -123,27 +118,19 @@ function createEditButton(component, container) {
   return editButton;
 }
 
-function toggleQuickActions() {
-  const editButton = document.querySelector(".button-container");
+function toggleQuickActions(titleElement) {
+  const buttonContainer = titleElement.nextElementSibling.nextElementSibling; // Get the button container
 
-  if (editButton && !editButton.style.display) {
-    editButton.style.display = "flex";
-  }
-
-  if (editButton && editButton.style.display == "none") {
-    editButton.style.display = "flex";
-  } else {
-    editButton.style.display = "none";
+  if (buttonContainer) {
+    buttonContainer.style.display = buttonContainer.style.display === "none" ? "flex" : "none";
   }
 }
 
 function toggleEditButton() {
-  const editButton = document.querySelector(".edit-button");
-  editButton.style.display = "block";
-  if (editButton) {
-    editButton.style.display =
-      editButton.style.display === "block" ? "none" : "block";
-  }
+  const editButtons = document.querySelectorAll(".edit-button");
+  editButtons.forEach((editButton) => {
+    editButton.style.display = editButton.style.display === "none" ? "block" : "none";
+  });
 }
 
 function openEditForm(component, container) {
@@ -164,36 +151,12 @@ function createEditForm(component) {
     { label: "Name", value: component.name, placeholder: "Name" },
     { label: "Path", value: component.Path, placeholder: "Path" },
     { label: "Live URL", value: component.Live, placeholder: "Live URL" },
-    {
-      label: "Editor Prod URL",
-      value: component.AEM_Prod,
-      placeholder: "Editor Prod URL",
-    },
-    {
-      label: "Editor Stage URL",
-      value: component.AEM_Stage,
-      placeholder: "Editor Stage URL",
-    },
-    {
-      label: "VAP Prod URL",
-      value: component.VAP_Prod,
-      placeholder: "VAP Prod URL",
-    },
-    {
-      label: "VAP Stage URL",
-      value: component.VAP_Stage,
-      placeholder: "VAP Stage URL",
-    },
-    {
-      label: "Bitbucket URL",
-      value: component.Bitbucket,
-      placeholder: "Bitbucket URL",
-    },
-    {
-      label: "Jenkins URL",
-      value: component.Jenkins,
-      placeholder: "Jenkins URL",
-    },
+    { label: "Editor Prod URL", value: component.AEM_Prod, placeholder: "Editor Prod URL" },
+    { label: "Editor Stage URL", value: component.AEM_Stage, placeholder: "Editor Stage URL" },
+    { label: "VAP Prod URL", value: component.VAP_Prod, placeholder: "VAP Prod URL" },
+    { label: "VAP Stage URL", value: component.VAP_Stage, placeholder: "VAP Stage URL" },
+    { label: "Bitbucket URL", value: component.Bitbucket, placeholder: "Bitbucket URL" },
+    { label: "Jenkins URL", value: component.Jenkins, placeholder: "Jenkins URL" },
   ];
 
   fields.forEach((field) => form.appendChild(createInputField(field)));
@@ -232,14 +195,12 @@ function createFormButtons(component, form) {
   };
 
   buttonContainer.appendChild(saveButton);
-  buttonContainer.appendChild(saveButton);
   buttonContainer.appendChild(cancelButton);
 
   return buttonContainer;
 }
 
 async function saveEdit(component, form) {
-  // Log the current component data and form values
   console.log("Before update:", component);
   console.log("Form values:", {
     name: form.querySelector("input[placeholder='Name']").value,
@@ -253,75 +214,32 @@ async function saveEdit(component, form) {
     jenkins: form.querySelector("input[placeholder='Jenkins URL']").value,
   });
 
-  // Update component data
   updateComponentData(component, form);
 
-  // Retrieve the updated components list
   const components = await getComponentsFromStorage();
   console.log("Components retrieved from storage:", components);
 
-  // Ensure you are updating the right component in the list by ID
   const updatedComponents = components.map((comp) =>
     comp.id === component.id ? { ...component } : comp
   );
   console.log("Updated components list:", updatedComponents);
 
-  // Save the updated data to storage
   saveDataToStorage(updatedComponents);
 
-  // Remove the form and re-render components
   form.remove();
   renderComponents(updatedComponents);
 }
 
 function updateComponentData(component, form) {
-  // Update the data of the component based on form values
   component.name = form.querySelector("input[placeholder='Name']").value;
   component.Path = form.querySelector("input[placeholder='Path']").value;
   component.Live = form.querySelector("input[placeholder='Live URL']").value;
-  component.AEM_Prod = form.querySelector(
-    "input[placeholder='Editor Prod URL']"
-  ).value;
-  component.AEM_Stage = form.querySelector(
-    "input[placeholder='Editor Stage URL']"
-  ).value;
-  component.VAP_Prod = form.querySelector(
-    "input[placeholder='VAP Prod URL']"
-  ).value;
-  component.VAP_Stage = form.querySelector(
-    "input[placeholder='VAP Stage URL']"
-  ).value;
-  component.Bitbucket = form.querySelector(
-    "input[placeholder='Bitbucket URL']"
-  ).value;
-  component.Jenkins = form.querySelector(
-    "input[placeholder='Jenkins URL']"
-  ).value;
-}
-
-function updateComponentData(component, form) {
-  // Update the data of the component based on form values
-  component.name = form.querySelector("input[placeholder='Name']").value;
-  component.Path = form.querySelector("input[placeholder='Path']").value;
-  component.Live = form.querySelector("input[placeholder='Live URL']").value;
-  component.AEM_Prod = form.querySelector(
-    "input[placeholder='Editor Prod URL']"
-  ).value;
-  component.AEM_Stage = form.querySelector(
-    "input[placeholder='Editor Stage URL']"
-  ).value;
-  component.VAP_Prod = form.querySelector(
-    "input[placeholder='VAP Prod URL']"
-  ).value;
-  component.VAP_Stage = form.querySelector(
-    "input[placeholder='VAP Stage URL']"
-  ).value;
-  component.Bitbucket = form.querySelector(
-    "input[placeholder='Bitbucket URL']"
-  ).value;
-  component.Jenkins = form.querySelector(
-    "input[placeholder='Jenkins URL']"
-  ).value;
+  component.AEM_Prod = form.querySelector("input[placeholder='Editor Prod URL']").value;
+  component.AEM_Stage = form.querySelector("input[placeholder='Editor Stage URL']").value;
+  component.VAP_Prod = form.querySelector("input[placeholder='VAP Prod URL']").value;
+  component.VAP_Stage = form.querySelector("input[placeholder='VAP Stage URL']").value;
+  component.Bitbucket = form.querySelector("input[placeholder='Bitbucket URL']").value;
+  component.Jenkins = form.querySelector("input[placeholder='Jenkins URL']").value;
 }
 
 function ensureAbsoluteUrl(url) {
@@ -340,26 +258,16 @@ function clearAllData() {
 
 function exportData() {
   getComponentsFromStorage().then((components) => {
-    // Convert the components data to JSON format
     const dataStr = JSON.stringify(components, null, 2);
-    
-    // Create a Blob object with the JSON data
     const blob = new Blob([dataStr], { type: "application/json" });
-    
-    // Create a link element to trigger the download
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "GoiaTools-Data.json";
-    
-    // Append the link to the document body and simulate a click to start the download
     document.body.appendChild(link);
     link.click();
-    
-    // Remove the link from the document body
     document.body.removeChild(link);
   });
 }
-
 
 function filterComponents() {
   const searchText = document.getElementById("searchInput").value.toLowerCase();
