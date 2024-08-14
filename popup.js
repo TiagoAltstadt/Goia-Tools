@@ -137,7 +137,7 @@ function createEditButton(component, container) {
 }
 
 function toggleQuickActions(titleElement) {
-  const buttonContainer = titleElement.nextElementSibling.nextElementSibling; // Get the button container
+  const buttonContainer = titleElement.nextElementSibling.nextElementSibling;
 
   if (buttonContainer) {
     buttonContainer.style.display =
@@ -172,24 +172,24 @@ function createEditForm(component) {
     { label: "Path", value: component.Path, placeholder: "Path" },
     { label: "Live URL", value: component.Live, placeholder: "Live URL" },
     {
-      label: "Editor Prod URL",
+      label: "Editor URL (Prod)",
       value: component.AEM_Prod,
-      placeholder: "Editor Prod URL",
+      placeholder: "Editor URL (Prod)",
     },
     {
-      label: "Editor Stage URL",
+      label: "Editor URL (Stage)",
       value: component.AEM_Stage,
-      placeholder: "Editor Stage URL",
+      placeholder: "Editor URL (Stage)",
     },
     {
-      label: "VAP Prod URL",
+      label: "VAP URL (Prod)",
       value: component.VAP_Prod,
-      placeholder: "VAP Prod URL",
+      placeholder: "VAP URL (Prod)",
     },
     {
-      label: "VAP Stage URL",
+      label: "VAP URL (Stage)",
       value: component.VAP_Stage,
-      placeholder: "VAP Stage URL",
+      placeholder: "VAP URL (Stage)",
     },
     {
       label: "Bitbucket URL",
@@ -245,28 +245,14 @@ function createFormButtons(component, form) {
 }
 
 async function saveEdit(component, form) {
-  console.log("Before update:", component);
-  console.log("Form values:", {
-    name: form.querySelector("input[placeholder='Name']").value,
-    path: form.querySelector("input[placeholder='Path']").value,
-    liveUrl: form.querySelector("input[placeholder='Live URL']").value,
-    aemProd: form.querySelector("input[placeholder='Editor Prod URL']").value,
-    aemStage: form.querySelector("input[placeholder='Editor Stage URL']").value,
-    vapProd: form.querySelector("input[placeholder='VAP Prod URL']").value,
-    vapStage: form.querySelector("input[placeholder='VAP Stage URL']").value,
-    bitbucket: form.querySelector("input[placeholder='Bitbucket URL']").value,
-    jenkins: form.querySelector("input[placeholder='Jenkins URL']").value,
-  });
 
   updateComponentData(component, form);
 
   const components = await getComponentsFromStorage();
-  console.log("Components retrieved from storage:", components);
 
   const updatedComponents = components.map((comp) =>
     comp.id === component.id ? { ...component } : comp
   );
-  console.log("Updated components list:", updatedComponents);
 
   saveDataToStorage(updatedComponents);
 
@@ -279,16 +265,16 @@ function updateComponentData(component, form) {
   component.Path = form.querySelector("input[placeholder='Path']").value;
   component.Live = form.querySelector("input[placeholder='Live URL']").value;
   component.AEM_Prod = form.querySelector(
-    "input[placeholder='Editor Prod URL']"
+    "input[placeholder='Editor URL (Prod)']"
   ).value;
   component.AEM_Stage = form.querySelector(
-    "input[placeholder='Editor Stage URL']"
+    "input[placeholder='Editor URL (Stage)']"
   ).value;
   component.VAP_Prod = form.querySelector(
-    "input[placeholder='VAP Prod URL']"
+    "input[placeholder='VAP URL (Prod)']"
   ).value;
   component.VAP_Stage = form.querySelector(
-    "input[placeholder='VAP Stage URL']"
+    "input[placeholder='VAP URL (Stage)']"
   ).value;
   component.Bitbucket = form.querySelector(
     "input[placeholder='Bitbucket URL']"
@@ -336,7 +322,6 @@ function filterComponents() {
 }
 
 function saveDataToStorage(data) {
-  console.log("Saving data to storage:", data);
   chrome.storage.local.set({ components: data }, () => {
     console.log("Data successfully saved to storage.");
   });

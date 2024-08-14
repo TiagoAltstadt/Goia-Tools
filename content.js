@@ -11,7 +11,6 @@ function createFloatingBadge(
 
   document.body.appendChild(badge);
 
-  // Make the badge draggable
   makeDraggable(badge);
 }
 
@@ -79,5 +78,4 @@ function init() {
   displayEnvironmentBadge();
 }
 
-// Initialize badges
 init();

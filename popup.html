@@ -4,21 +4,29 @@
 <head>
     <title>Goia Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body id="goiaToolsBody">
     <h2 class="title">Goia Tools</h2>
-    <input type="text" id="searchInput" placeholder="Search components">
+
+    <div class="search-field">
+        <input type="text" id="searchInput" placeholder="Search components">
+        <div class="line"></div>
+    </div>
+
     <div id="componentContainer" class="component-container">
         <!-- Components will be loaded here -->
     </div>
+
     <div style="display: flex; justify-content: space-evenly; flex-direction: column; margin-top: 8px;">
-        <button id="clearData">Clear All Data</button>
-        <button id="addDataFromFile">Add Data from File</button>
-        <button id="exportData">Export</button>
+        <button id="clearData">Limpiar</button>
+        <button id="addDataFromFile">Agregar desde archivo</button>
+        <button id="exportData">Exportar</button>
     </div>
+
     <div class="credits">Por: <a href="https://www.tiagoaltstadt.com" target="_blank">Tiago Altstadt</a></div>
+
     <input type="file" id="fileInput" accept=".json">
     <script src="popup.js"></script>
 </body>

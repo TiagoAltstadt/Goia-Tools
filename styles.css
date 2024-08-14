@@ -1,3 +1,8 @@
+:root {
+  --primary-color: #1abc9c;
+  --secondary-color: #221abc;
+  --error-color: #c61e1e;
+}
 * {
   ::-webkit-scrollbar {
     width: 5px;
@@ -15,20 +20,66 @@
   }
 }
 
-body {
+#searchInput {
+  background: 0;
+  border: 0;
+  outline: none;
+  width: 80vw;
+  max-width: 400px;
+  font-size: 1.5em;
+  transition: padding 0.3s 0.2s ease;
+}
+
+#searchInput:focus {
+  padding-bottom: 5px;
+}
+
+#searchInput:focus + .line:after {
+  transform: scaleX(1);
+}
+
+/* popup.html */
+.search-field {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.search-field .line {
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -8px;
+  background: #bdc3c7;
+}
+
+.search-field .line:after {
+  content: " ";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  background: var(--primary-color);
+}
+
+/* other */
+
+#goiaToolsBody {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
   width: 320px;
   font-family: "Nunito", sans-serif;
   font-size: medium;
   background-color: #f5f5f5;
   border-radius: 8px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
   margin: 0 auto;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 0;
+  font-size: xx-large;
   color: #333;
 }
 
@@ -53,7 +104,6 @@ body {
 }
 
 input {
-  margin-bottom: 15px;
   width: 100%;
   background-color: #e0f7fa;
   color: #333;
@@ -78,31 +128,38 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-color);
 }
 
 #clearData {
-  background-color: #f44336;
+  background-color: var(--error-color);
+  opacity: 0.7;
 }
 
 #clearData:hover {
-  background-color: #d32f2f;
+  opacity: 1;
 }
 
 #addDataFromFile {
-  background-color: #4caf50;
+  opacity: 0.7;
+  background-color: var(--primary-color);
 }
 
 #addDataFromFile:hover {
-  background-color: #388e3c;
+  opacity: 1;
 }
 
 #exportData {
-  background-color: #2196f3;
+  opacity: 0.7;
+  background-color: var(--secondary-color);
 }
 
 #exportData:hover {
-  background-color: #1976d2;
+  opacity: 1;
+}
+
+.component-container {
+  padding-top: 10px;
 }
 
 .component {
@@ -112,7 +169,9 @@ button:hover {
   margin-bottom: 15px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+.component:hover {
+  box-shadow: 5px 5px 5px rgba(1, 1, 1, 0.08);
 }
 
 .component h3 {
@@ -192,17 +251,16 @@ input[type="file"] {
   font-size: 0.9em;
 }
 
-
 /* content.js */
 .floating-badge {
-    position: fixed;
-    right: 10px;
-    /* top: 10px; */
-    height: fit-content;
-    padding: 10px;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 14px;
-    cursor: move;
-    z-index: 9999;
+  position: fixed;
+  right: 10px;
+  /* top: 10px; */
+  height: fit-content;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 14px;
+  cursor: move;
+  z-index: 9999;
 }
