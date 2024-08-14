@@ -1,3 +1,20 @@
+* {
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(201, 201, 201);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(141, 141, 141);
+  }
+}
+
 body {
   padding: 20px;
   width: 320px;
@@ -114,9 +131,9 @@ button:hover {
 }
 
 .component .button-row {
-    display: flex;
-    width: 240px;
-    flex-direction: column;
+  display: flex;
+  width: 240px;
+  flex-direction: column;
 }
 .component .button-container {
   display: flex;
