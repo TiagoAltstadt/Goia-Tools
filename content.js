@@ -1,18 +1,8 @@
-function createFloatingBadge(text, bgColor, bottomOffset) {
+function createFloatingBadge(text, bottomOffset = 50, bgColor = 'rgba(135, 206, 250, 0.9)') {
   const badge = document.createElement("div");
-  badge.style.position = "fixed";
+  badge.className = "floating-badge";
   badge.style.bottom = `${bottomOffset}px`;
-  badge.style.right = "10px";
-  badge.style.maxWidth = "300px";
   badge.style.backgroundColor = bgColor;
-  badge.style.color = "black";
-  badge.style.padding = "10px 15px";
-  badge.style.borderRadius = "8px";
-  badge.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.2)";
-  badge.style.zIndex = "10000";
-  badge.style.cursor = "move";
-  badge.style.fontFamily = "'Nunito', sans-serif";
-  badge.style.fontSize = "0.9em";
   badge.innerHTML = text;
 
   document.body.appendChild(badge);
@@ -20,6 +10,7 @@ function createFloatingBadge(text, bgColor, bottomOffset) {
   // Make the badge draggable
   makeDraggable(badge);
 }
+
 
 function makeDraggable(el) {
   let isDragging = false;
