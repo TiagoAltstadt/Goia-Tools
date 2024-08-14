@@ -104,10 +104,11 @@
 }
 
 input {
+  background: 0;
+  border: 1px solid var(--primary-color);
+  outline: none;
   width: 100%;
-  background-color: #e0f7fa;
   color: #333;
-  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 10px;
   font-size: 1em;
@@ -171,7 +172,7 @@ button:hover {
   border-radius: 8px;
 }
 .component:hover {
-  box-shadow: 5px 5px 5px rgba(1, 1, 1, 0.08);
+  box-shadow: 5px 5px 5px var(--primary-color);
 }
 
 .component h3 {
