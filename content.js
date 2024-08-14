@@ -11,7 +11,6 @@ function createFloatingBadge(text, bottomOffset = 50, bgColor = 'rgba(135, 206, 
   makeDraggable(badge);
 }
 
-
 function makeDraggable(el) {
   let isDragging = false;
   let offsetX, offsetY;

@@ -9,8 +9,12 @@ function setupEventListeners() {
     .getElementById("addDataFromFile")
     .addEventListener("click", triggerFileInput);
   document.getElementById("exportData").addEventListener("click", exportData);
-  document.getElementById("searchInput").addEventListener("input", filterComponents);
-  document.getElementById("fileInput").addEventListener("change", handleFileUpload);
+  document
+    .getElementById("searchInput")
+    .addEventListener("input", filterComponents);
+  document
+    .getElementById("fileInput")
+    .addEventListener("change", handleFileUpload);
 }
 
 function triggerFileInput() {
@@ -108,8 +112,23 @@ function createEditButton(component, container) {
   const editButton = document.createElement("button");
   editButton.className = "edit-button";
   editButton.textContent = "Edit";
-  editButton.onclick = () => openEditForm(component, container);
+  editButton.onclick = () => {
+    openEditForm(component, container), toggleEditButton();
+  };
   return editButton;
+}
+function toggleEditButton() {
+  const editButton = document.querySelector(".edit-button");
+
+  if (editButton && !editButton.style.display) {
+    editButton.style.display = "block";
+  }
+
+  if (editButton && editButton.style.display == "block") {
+    editButton.style.display = "none";
+  } else {
+    editButton.style.display = "block";
+  }
 }
 
 function openEditForm(component, container) {
@@ -130,12 +149,36 @@ function createEditForm(component) {
     { label: "Name", value: component.name, placeholder: "Name" },
     { label: "Path", value: component.Path, placeholder: "Path" },
     { label: "Live URL", value: component.Live, placeholder: "Live URL" },
-    { label: "Editor Prod URL", value: component.AEM_Prod, placeholder: "Editor Prod URL" },
-    { label: "Editor Stage URL", value: component.AEM_Stage, placeholder: "Editor Stage URL" },
-    { label: "VAP Prod URL", value: component.VAP_Prod, placeholder: "VAP Prod URL" },
-    { label: "VAP Stage URL", value: component.VAP_Stage, placeholder: "VAP Stage URL" },
-    { label: "Bitbucket URL", value: component.Bitbucket, placeholder: "Bitbucket URL" },
-    { label: "Jenkins URL", value: component.Jenkins, placeholder: "Jenkins URL" },
+    {
+      label: "Editor Prod URL",
+      value: component.AEM_Prod,
+      placeholder: "Editor Prod URL",
+    },
+    {
+      label: "Editor Stage URL",
+      value: component.AEM_Stage,
+      placeholder: "Editor Stage URL",
+    },
+    {
+      label: "VAP Prod URL",
+      value: component.VAP_Prod,
+      placeholder: "VAP Prod URL",
+    },
+    {
+      label: "VAP Stage URL",
+      value: component.VAP_Stage,
+      placeholder: "VAP Stage URL",
+    },
+    {
+      label: "Bitbucket URL",
+      value: component.Bitbucket,
+      placeholder: "Bitbucket URL",
+    },
+    {
+      label: "Jenkins URL",
+      value: component.Jenkins,
+      placeholder: "Jenkins URL",
+    },
   ];
 
   fields.forEach((field) => form.appendChild(createInputField(field)));
@@ -168,7 +211,9 @@ function createFormButtons(component, form) {
 
   const cancelButton = document.createElement("button");
   cancelButton.textContent = "Cancel";
-  cancelButton.onclick = () => form.remove();
+  cancelButton.onclick = () => {
+    form.remove(), toggleEditButton();
+  };
 
   buttonContainer.appendChild(saveButton);
   buttonContainer.appendChild(cancelButton);
@@ -187,12 +232,24 @@ function updateComponentData(component, form) {
   component.name = form.querySelector("input[placeholder='Name']").value;
   component.Path = form.querySelector("input[placeholder='Path']").value;
   component.Live = form.querySelector("input[placeholder='Live URL']").value;
-  component.AEM_Prod = form.querySelector("input[placeholder='Editor Prod URL']").value;
-  component.AEM_Stage = form.querySelector("input[placeholder='Editor Stage URL']").value;
-  component.VAP_Prod = form.querySelector("input[placeholder='VAP Prod URL']").value;
-  component.VAP_Stage = form.querySelector("input[placeholder='VAP Stage URL']").value;
-  component.Bitbucket = form.querySelector("input[placeholder='Bitbucket URL']").value;
-  component.Jenkins = form.querySelector("input[placeholder='Jenkins URL']").value;
+  component.AEM_Prod = form.querySelector(
+    "input[placeholder='Editor Prod URL']"
+  ).value;
+  component.AEM_Stage = form.querySelector(
+    "input[placeholder='Editor Stage URL']"
+  ).value;
+  component.VAP_Prod = form.querySelector(
+    "input[placeholder='VAP Prod URL']"
+  ).value;
+  component.VAP_Stage = form.querySelector(
+    "input[placeholder='VAP Stage URL']"
+  ).value;
+  component.Bitbucket = form.querySelector(
+    "input[placeholder='Bitbucket URL']"
+  ).value;
+  component.Jenkins = form.querySelector(
+    "input[placeholder='Jenkins URL']"
+  ).value;
 }
 
 function ensureAbsoluteUrl(url) {
