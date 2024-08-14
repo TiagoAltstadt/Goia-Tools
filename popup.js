@@ -127,11 +127,11 @@ function toggleQuickActions() {
   const editButton = document.querySelector(".button-container");
 
   if (editButton && !editButton.style.display) {
-    editButton.style.display = "block";
+    editButton.style.display = "flex";
   }
 
   if (editButton && editButton.style.display == "none") {
-    editButton.style.display = "block";
+    editButton.style.display = "flex";
   } else {
     editButton.style.display = "none";
   }
