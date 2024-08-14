@@ -117,8 +117,8 @@ function createEditButton(component, container) {
   editButton.className = "edit-button";
   editButton.textContent = "Edit";
   editButton.onclick = () => {
-    openEditForm(component, container);
     toggleEditButton();
+    openEditForm(component, container);
   };
   return editButton;
 }
@@ -139,7 +139,7 @@ function toggleQuickActions() {
 
 function toggleEditButton() {
   const editButton = document.querySelector(".edit-button");
-
+  editButton.style.display = 'block'
   if (editButton) {
     editButton.style.display =
       editButton.style.display === "block" ? "none" : "block";
@@ -231,6 +231,7 @@ function createFormButtons(component, form) {
     toggleEditButton();
   };
 
+  buttonContainer.appendChild(saveButton);
   buttonContainer.appendChild(saveButton);
   buttonContainer.appendChild(cancelButton);
 
