@@ -113,21 +113,18 @@ function createEditButton(component, container) {
   editButton.className = "edit-button";
   editButton.textContent = "Edit";
   editButton.onclick = () => {
-    openEditForm(component, container), toggleEditButton();
+    openEditForm(component, container);
+    toggleEditButton();
   };
   return editButton;
 }
+
 function toggleEditButton() {
   const editButton = document.querySelector(".edit-button");
 
-  if (editButton && !editButton.style.display) {
-    editButton.style.display = "block";
-  }
-
-  if (editButton && editButton.style.display == "block") {
-    editButton.style.display = "none";
-  } else {
-    editButton.style.display = "block";
+  if (editButton) {
+    editButton.style.display =
+      editButton.style.display === "block" ? "none" : "block";
   }
 }
 
@@ -212,7 +209,8 @@ function createFormButtons(component, form) {
   const cancelButton = document.createElement("button");
   cancelButton.textContent = "Cancel";
   cancelButton.onclick = () => {
-    form.remove(), toggleEditButton();
+    form.remove();
+    toggleEditButton();
   };
 
   buttonContainer.appendChild(saveButton);
@@ -221,35 +219,53 @@ function createFormButtons(component, form) {
   return buttonContainer;
 }
 
-function saveEdit(component, form) {
+async function saveEdit(component, form) {
+  // Log the current component data and form values
+  console.log("Before update:", component);
+  console.log("Form values:", {
+    name: form.querySelector("input[placeholder='Name']").value,
+    path: form.querySelector("input[placeholder='Path']").value,
+    liveUrl: form.querySelector("input[placeholder='Live URL']").value,
+    aemProd: form.querySelector("input[placeholder='Editor Prod URL']").value,
+    aemStage: form.querySelector("input[placeholder='Editor Stage URL']").value,
+    vapProd: form.querySelector("input[placeholder='VAP Prod URL']").value,
+    vapStage: form.querySelector("input[placeholder='VAP Stage URL']").value,
+    bitbucket: form.querySelector("input[placeholder='Bitbucket URL']").value,
+    jenkins: form.querySelector("input[placeholder='Jenkins URL']").value,
+  });
+
+  // Update component data
   updateComponentData(component, form);
-  saveDataToStorage(getComponentsFromStorage());
+
+  // Retrieve the updated components list
+  const components = await getComponentsFromStorage();
+  console.log("Components retrieved from storage:", components);
+
+  // Ensure you are updating the right component in the list
+  const updatedComponents = components.map((comp) =>
+    comp.name === component.name ? { ...component } : comp
+  );
+  console.log("Updated components list:", updatedComponents);
+
+  // Save the updated data to storage
+  saveDataToStorage(updatedComponents);
+
+  // Remove the form and re-render components
   form.remove();
-  renderComponents(getComponentsFromStorage());
+  renderComponents(updatedComponents);
 }
 
 function updateComponentData(component, form) {
+  // Update the data of the component based on form values
   component.name = form.querySelector("input[placeholder='Name']").value;
   component.Path = form.querySelector("input[placeholder='Path']").value;
   component.Live = form.querySelector("input[placeholder='Live URL']").value;
-  component.AEM_Prod = form.querySelector(
-    "input[placeholder='Editor Prod URL']"
-  ).value;
-  component.AEM_Stage = form.querySelector(
-    "input[placeholder='Editor Stage URL']"
-  ).value;
-  component.VAP_Prod = form.querySelector(
-    "input[placeholder='VAP Prod URL']"
-  ).value;
-  component.VAP_Stage = form.querySelector(
-    "input[placeholder='VAP Stage URL']"
-  ).value;
-  component.Bitbucket = form.querySelector(
-    "input[placeholder='Bitbucket URL']"
-  ).value;
-  component.Jenkins = form.querySelector(
-    "input[placeholder='Jenkins URL']"
-  ).value;
+  component.AEM_Prod = form.querySelector("input[placeholder='Editor Prod URL']").value;
+  component.AEM_Stage = form.querySelector("input[placeholder='Editor Stage URL']").value;
+  component.VAP_Prod = form.querySelector("input[placeholder='VAP Prod URL']").value;
+  component.VAP_Stage = form.querySelector("input[placeholder='VAP Stage URL']").value;
+  component.Bitbucket = form.querySelector("input[placeholder='Bitbucket URL']").value;
+  component.Jenkins = form.querySelector("input[placeholder='Jenkins URL']").value;
 }
 
 function ensureAbsoluteUrl(url) {
@@ -281,15 +297,27 @@ function filterComponents() {
 }
 
 function saveDataToStorage(data) {
+  console.log("Saving data to storage:", data);
   chrome.storage.local.set({ components: data }, () => {
-    console.log("Data saved to storage.");
+    console.log("Data successfully saved to storage.");
+  });
+}
+
+
+async function getComponentsFromStorage() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["components"], (result) => {
+      const components = result.components || [];
+      console.log("Retrieved components from storage:", components);
+      resolve(components);
+    });
   });
 }
 
 function loadDataFromStorage() {
-  chrome.storage.local.get(["components"], (result) => {
-    if (result.components) {
-      renderComponents(result.components);
+  getComponentsFromStorage().then((components) => {
+    if (components) {
+      renderComponents(components);
     }
   });
 }
@@ -300,12 +328,4 @@ function renderComponents(components) {
   components.forEach((component) => {
     componentContainer.appendChild(createComponent(component));
   });
-}
-
-async function saveEdit(component, form) {
-  const components = await getComponentsFromStorage();
-  updateComponentData(component, form);
-  saveDataToStorage(components);
-  form.remove();
-  renderComponents(components);
 }
