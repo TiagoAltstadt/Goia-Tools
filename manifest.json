@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Goia Tools",
   "version": "1.2",
-  "description": "Shows a floating window for specific domains, By Tiago Altstadt",
+  "description": "Features: Notify Environment, Notify Locale, Organize and enables quick access button to many different URL's, share it with your team button, etc",
   "permissions": [
     "activeTab",
     "storage"
