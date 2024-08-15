@@ -1,70 +1,66 @@
-:root {
+#goiaToolsBody {
   --primary-color: #1abc9c;
   --secondary-color: #221abc;
   --error-color: #c61e1e;
-}
-* {
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  
+  * {
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgb(201, 201, 201);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgb(141, 141, 141);
+    }
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
+
+  #searchInput {
+    background: 0;
+    border: 0;
+    outline: none;
+    width: 80vw;
+    max-width: 400px;
+    font-size: 1.5em;
+    transition: padding 0.3s 0.2s ease;
   }
-  ::-webkit-scrollbar-thumb {
-    background: rgb(201, 201, 201);
-    border-radius: 10px;
+
+  #searchInput:focus {
+    padding-bottom: 5px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgb(141, 141, 141);
+
+  #searchInput:focus + .line:after {
+    transform: scaleX(1);
   }
-}
 
-#searchInput {
-  background: 0;
-  border: 0;
-  outline: none;
-  width: 80vw;
-  max-width: 400px;
-  font-size: 1.5em;
-  transition: padding 0.3s 0.2s ease;
-}
+  .search-field {
+    margin-bottom: 10px;
+    position: relative;
+  }
 
-#searchInput:focus {
-  padding-bottom: 5px;
-}
+  .search-field .line {
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: -8px;
+    background: #bdc3c7;
+  }
 
-#searchInput:focus + .line:after {
-  transform: scaleX(1);
-}
+  .search-field .line:after {
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    background: var(--primary-color);
+  }
 
-/* popup.html */
-.search-field {
-  margin-bottom: 10px;
-  position: relative;
-}
-
-.search-field .line {
-  width: 100%;
-  height: 3px;
-  position: absolute;
-  bottom: -8px;
-  background: #bdc3c7;
-}
-
-.search-field .line:after {
-  content: " ";
-  position: absolute;
-  width: 100%;
-  height: 3px;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  background: var(--primary-color);
-}
-
-/* other */
-
-#goiaToolsBody {
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -76,34 +72,34 @@
   margin: 0 auto;
 }
 
-.title {
+#goiaToolsBody .title {
   text-align: center;
   margin: 0;
   font-size: xx-large;
   color: #333;
 }
 
-.path {
+#goiaToolsBody .path {
   font-size: 0.9em;
   color: #555;
   margin-bottom: 10px;
 }
 
-.path-subtitle {
+#goiaToolsBody .path-subtitle {
   font-size: 0.8em;
   color: #555;
   margin: 5px auto;
   text-align: center;
 }
 
-.credits {
+#goiaToolsBody .credits {
   text-align: center;
   margin-top: 10px;
   color: gray;
   font-size: 0.9em;
 }
 
-input {
+#goiaToolsBody input {
   background: 0;
   border: 1px solid var(--primary-color);
   outline: none;
@@ -115,7 +111,7 @@ input {
   box-sizing: border-box;
 }
 
-button {
+#goiaToolsBody button {
   width: 100%;
   border-radius: 8px;
   padding: 10px;
@@ -128,42 +124,42 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+#goiaToolsBody button:hover {
   background-color: var(--primary-color);
 }
 
-#clearData {
+#goiaToolsBody #clearData {
   background-color: var(--error-color);
   opacity: 0.7;
 }
 
-#clearData:hover {
+#goiaToolsBody #clearData:hover {
   opacity: 1;
 }
 
-#addDataFromFile {
+#goiaToolsBody #addDataFromFile {
   opacity: 0.7;
   background-color: var(--primary-color);
 }
 
-#addDataFromFile:hover {
+#goiaToolsBody #addDataFromFile:hover {
   opacity: 1;
 }
 
-#exportData {
+#goiaToolsBody #exportData {
   opacity: 0.7;
   background-color: var(--secondary-color);
 }
 
-#exportData:hover {
+#goiaToolsBody #exportData:hover {
   opacity: 1;
 }
 
-.component-container {
+#goiaToolsBody .component-container {
   padding-top: 10px;
 }
 
-.component {
+#goiaToolsBody .component {
   position: relative;
   padding: 15px;
   border: 1px solid #ddd;
@@ -171,18 +167,18 @@ button:hover {
   background: #fff;
   border-radius: 8px;
 }
-.component:hover {
+#goiaToolsBody .component:hover {
   box-shadow: 5px 5px 5px var(--primary-color);
 }
 
-.component h3 {
+#goiaToolsBody .component h3 {
   font-size: 1em;
   margin: 0 0 8px 0;
   text-align: center;
   color: #333;
 }
 
-.component span {
+#goiaToolsBody .component span {
   display: block;
   font-size: 0.9em;
   text-align: center;
@@ -190,53 +186,52 @@ button:hover {
   color: #555;
 }
 
-.component .button-row {
+#goiaToolsBody .button-row {
   display: flex;
   width: 240px;
   flex-direction: column;
 }
-.component .button-container {
+#goiaToolsBody .button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.component button {
+#goiaToolsBody .component button {
   margin: 2px;
   padding: 5px 10px;
   font-size: 0.9em;
 }
 
-.edit-button {
+#goiaToolsBody .edit-button {
   background: none;
   border: none;
   cursor: pointer;
   color: black;
 }
 
-.edit-form label {
+#goiaToolsBody .edit-form label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-.edit-form input {
+#goiaToolsBody .edit-form input {
   display: block;
   margin-bottom: 10px;
   width: calc(100% - 22px);
   /* Adjust width to fit label and padding */
 }
 
-.edit-form button {
+#goiaToolsBody .edit-form button {
   margin-right: 10px;
 }
 
-input[type="file"] {
+#goiaToolsBody input[type="file"] {
   display: none;
 }
 
-/* Floating badge styles */
-.floating-badge {
+#goiaToolsBody .floating-badge {
   position: fixed;
   bottom: 50px; /* Default bottom offset */
   right: 10px;
@@ -252,11 +247,9 @@ input[type="file"] {
   font-size: 0.9em;
 }
 
-/* content.js */
-.floating-badge {
+#goiaToolsBody .floating-badge {
   position: fixed;
   right: 10px;
-  /* top: 10px; */
   height: fit-content;
   padding: 10px;
   border-radius: 5px;
