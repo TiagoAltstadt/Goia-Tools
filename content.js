@@ -57,24 +57,25 @@ function displayEnvironmentBadge() {
     environment = "Stage";
   }
 
-  if ((environment == "Stage")) {
+  if (environment == "Stage") {
     createFloatingBadge(
       `Environment: ${environment}`,
       50,
       "rgb(119 255 73 / 90%)"
     );
+    displayLocaleBadge();
   }
-  if ((environment == "Prod")) {
+  if (environment == "Prod") {
     createFloatingBadge(
       `Environment: ${environment}`,
       50,
       "rgb(255 73 73 / 90%)"
     );
+    displayLocaleBadge();
   }
 }
 
 function init() {
-  displayLocaleBadge();
   displayEnvironmentBadge();
 }
 
