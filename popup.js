@@ -45,7 +45,7 @@ function handleFileUpload(event) {
 
 function createComponent(component) {
   const container = document.createElement("div");
-  container.className = "component";
+  container.className = "component blur";
   container.id = `component-${component.id}`;
 
   container.appendChild(createTitle(component.name));
@@ -245,7 +245,6 @@ function createFormButtons(component, form) {
 }
 
 async function saveEdit(component, form) {
-
   updateComponentData(component, form);
 
   const components = await getComponentsFromStorage();
@@ -316,6 +315,7 @@ function filterComponents() {
   const components = document.querySelectorAll(".component");
 
   components.forEach((component) => {
+    if (!component.querySelector("h3")) return;
     const title = component.querySelector("h3").textContent.toLowerCase();
     component.style.display = title.includes(searchText) ? "" : "none";
   });
@@ -339,9 +339,16 @@ async function getComponentsFromStorage() {
 function loadDataFromStorage() {
   getComponentsFromStorage().then((components) => {
     if (components) {
+      addStats(components);
       renderComponents(components);
     }
   });
+}
+
+function addStats(components) {
+  const sitesCount = document.getElementById("sites-count");
+  sitesCount.innerHTML = "Sites count: " + components.length;
+  sitesCount.style.color = "white";
 }
 
 function renderComponents(components) {

@@ -2,7 +2,7 @@
   --primary-color: #1abc9c;
   --secondary-color: #221abc;
   --error-color: #c61e1e;
-  --font-white: rgb(202, 202, 202);
+  --font-white: rgb(255, 255, 255);
   --transition-time: 0.3s;
 
   display: flex;
@@ -30,6 +30,15 @@
     ::-webkit-scrollbar-thumb:hover {
       background: rgb(141, 141, 141);
     }
+  }
+
+  .blur {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   #searchInput {
@@ -82,6 +91,12 @@
   text-align: center;
   margin: 0;
   font-size: xx-large;
+  color: var(--font-white);
+}
+#goiaToolsBody .subtitle {
+  text-align: center;
+  margin: 0;
+  font-size: x-large;
   color: var(--font-white);
 }
 
@@ -176,12 +191,6 @@
   padding: 15px;
   border: 1px solid #ddd;
   margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 #goiaToolsBody .component:hover {
   transform: translateY(-5px);
@@ -267,4 +276,3 @@
   opacity: 1; /* Fade in */
   transform: translateX(0); /* Smooth slide */
 }
-
