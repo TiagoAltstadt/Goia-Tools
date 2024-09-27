@@ -2,7 +2,19 @@
   --primary-color: #1abc9c;
   --secondary-color: #221abc;
   --error-color: #c61e1e;
-  
+  --font-white: rgb(202, 202, 202);
+  --transition-time: 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 320px;
+  font-family: "Nunito", sans-serif;
+  font-size: medium;
+  border-radius: 8px;
+  margin: 0 auto;
+  background-image: url("./assets/wallpaper2.jpg");
+
   * {
     ::-webkit-scrollbar {
       width: 5px;
@@ -33,6 +45,10 @@
   #searchInput:focus {
     padding-bottom: 5px;
   }
+  #searchInput::placeholder {
+    color: var(--font-white); /* Replace #999 with your desired color */
+    opacity: 1; /* Optional: Ensures full opacity for better visibility */
+  }
 
   #searchInput:focus + .line:after {
     transform: scaleX(1);
@@ -60,34 +76,24 @@
     transition: transform 0.3s ease;
     background: var(--primary-color);
   }
-
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  width: 320px;
-  font-family: "Nunito", sans-serif;
-  font-size: medium;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  margin: 0 auto;
 }
 
 #goiaToolsBody .title {
   text-align: center;
   margin: 0;
   font-size: xx-large;
-  color: #333;
+  color: var(--font-white);
 }
 
 #goiaToolsBody .path {
   font-size: 0.9em;
-  color: #555;
+  color: var(--font-white);
   margin-bottom: 10px;
 }
 
 #goiaToolsBody .path-subtitle {
   font-size: 0.8em;
-  color: #555;
+  color: var(--font-white);
   margin: 5px auto;
   text-align: center;
 }
@@ -95,7 +101,13 @@
 #goiaToolsBody .credits {
   text-align: center;
   margin-top: 10px;
-  color: gray;
+  color: var(--font-white);
+  font-size: 0.9em;
+}
+#goiaToolsBody .credits a {
+  text-align: center;
+  margin-top: 10px;
+  color: var(--font-white);
   font-size: 0.9em;
 }
 
@@ -104,7 +116,7 @@
   border: 1px solid var(--primary-color);
   outline: none;
   width: 100%;
-  color: #333;
+  color: var(--font-white);
   border-radius: 8px;
   padding: 10px;
   font-size: 1em;
@@ -120,7 +132,7 @@
   margin-bottom: 10px;
   font-size: 1em;
   background-color: #007bff;
-  color: white;
+  color: var(--font-white);
   transition: background-color 0.3s ease;
 }
 
@@ -164,18 +176,25 @@
   padding: 15px;
   border: 1px solid #ddd;
   margin-bottom: 15px;
-  background: #fff;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 #goiaToolsBody .component:hover {
-  box-shadow: 5px 5px 5px var(--primary-color);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-time),
+    box-shadow var(--transition-time);
 }
 
 #goiaToolsBody .component h3 {
   font-size: 1em;
   margin: 0 0 8px 0;
   text-align: center;
-  color: #333;
+  color: var(--font-white);
 }
 
 #goiaToolsBody .component span {
@@ -183,7 +202,7 @@
   font-size: 0.9em;
   text-align: center;
   margin-bottom: 10px;
-  color: #555;
+  color: var(--font-white);
 }
 
 #goiaToolsBody .button-row {
@@ -207,7 +226,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: black;
+  color: var(--font-white);
 }
 
 #goiaToolsBody .edit-form label {
@@ -231,30 +250,21 @@
   display: none;
 }
 
-#goiaToolsBody .floating-badge {
-  position: fixed;
-  bottom: 50px; /* Default bottom offset */
-  right: 10px;
-  max-width: 300px;
-  background-color: rgba(135, 206, 250, 0.9); /* Default background color */
-  color: black;
-  padding: 10px 15px;
+.quick-actions-menu {
+  display: none; /* Initially hidden */
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 10000;
-  cursor: move;
-  font-family: "Nunito", sans-serif;
-  font-size: 0.9em;
+  position: fixed;
+  z-index: 10001;
+  opacity: 0; /* Initial opacity for smooth transition */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+.quick-actions-menu.show {
+  display: block; /* Show the menu */
+  opacity: 1; /* Fade in */
+  transform: translateX(0); /* Smooth slide */
 }
 
-#goiaToolsBody .floating-badge {
-  position: fixed;
-  right: 10px;
-  height: fit-content;
-  padding: 10px;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 14px;
-  cursor: move;
-  z-index: 9999;
-}
