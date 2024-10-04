@@ -1,7 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   loadDataFromStorage();
+  
 });
+
+function saveBasicUrlsToStorage(basicUrls) {
+  chrome.storage.local.set({ basicUrls }, () => {
+    console.log("Basic URLs successfully saved to storage.");
+  });
+}
 
 function setupEventListeners() {
   document.getElementById("clearData").addEventListener("click", clearAllData);
@@ -33,6 +40,11 @@ function handleFileUpload(event) {
           renderComponents(data.urls[0]);
         } else {
           alert("Invalid file format.");
+        }
+        if (data.basicUrls) {
+          saveBasicUrlsToStorage(data.basicUrls);
+        } else {
+          alert("No basic URLs found in the JSON file.");
         }
       } catch (e) {
         console.error("Error parsing JSON file:", e);

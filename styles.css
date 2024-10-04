@@ -15,23 +15,6 @@
   margin: 0 auto;
   background-image: url("./assets/wallpaper2.jpg");
 
-  * {
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgb(201, 201, 201);
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgb(141, 141, 141);
-    }
-  }
-
   .blur {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 16px;

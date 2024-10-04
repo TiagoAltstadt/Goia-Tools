@@ -124,7 +124,6 @@ function showQuickActionsMenu(badge) {
   editorButton.style.borderRadius = "4px";
   editorButton.style.cursor = "pointer";
   editorButton.addEventListener("click", () => {
-    // Bookmarklet logic
     const u = location.href.split(".net/");
     window.open(
       u[0] + ".net/editor.html/" + u[1].split("?wcmmode=disabled")[0],
@@ -134,33 +133,64 @@ function showQuickActionsMenu(badge) {
 
   // Button for Editor to Admin
   const adminButton = document.createElement("button");
-  adminButton.textContent = "Editor to Admin";
-  adminButton.style.width = "100%";
-  adminButton.style.padding = "5px";
-  adminButton.style.marginTop = "5px";
-  adminButton.style.backgroundColor = "lightgreen";
-  adminButton.style.border = "none";
-  adminButton.style.borderRadius = "4px";
-  adminButton.style.cursor = "pointer";
-  adminButton.addEventListener("click", () => {
-    // Bookmarklet logic
-    var url = window.location.href;
-    var baseDomain =
-      "https://author-colgate-prod-65.adobecqms.net/sites.html/content";
+adminButton.textContent = "Editor to Admin";
+adminButton.style.width = "100%";
+adminButton.style.padding = "5px";
+adminButton.style.marginTop = "5px";
+adminButton.style.backgroundColor = "lightgreen";
+adminButton.style.border = "none";
+adminButton.style.borderRadius = "4px";
+adminButton.style.cursor = "pointer";
+adminButton.addEventListener("click", () => {
+  var url = window.location.href;
+
+  // Make sure we're in the editor context
+  if (
+    url.startsWith(
+      "https://author-colgate-stage-65.adobecqms.net/editor.html/content/"
+    )
+  ) {
+    // Remove the editor.html part and the .html extension from the content URL
+    var path = url.replace(
+      "https://author-colgate-stage-65.adobecqms.net/editor.html/content/",
+      ""
+    );
+    var cleanPath = path.replace(".html", "");
+
+    // Rebuild the URL for the admin view
+    var newUrl =
+      "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" +
+      cleanPath;
+    console.log("Transformed URL:", newUrl);
+    window.open(newUrl, "_blank");
+  } else {
+    alert("The current page URL does not match the expected format.");
+  }
+});
+
+
+  // New Button for View in Admin
+  const viewAdminButton = document.createElement("button");
+  viewAdminButton.textContent = "Admin to Editor";
+  viewAdminButton.style.width = "100%";
+  viewAdminButton.style.padding = "5px";
+  viewAdminButton.style.marginTop = "5px";
+  viewAdminButton.style.backgroundColor = "yellow";
+  viewAdminButton.style.border = "none";
+  viewAdminButton.style.borderRadius = "4px";
+  viewAdminButton.style.cursor = "pointer";
+  viewAdminButton.addEventListener("click", () => {
+    const url = window.location.href;
     if (
       url.startsWith(
-        "https://author-colgate-prod-65.adobecqms.net/editor.html/content/"
+        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/"
       )
     ) {
-      var path = url.replace(
-        "https://author-colgate-prod-65.adobecqms.net/editor.html/content/",
-        ""
-      );
-      var segments = path.split("/");
-      var lastSegment = segments.pop().replace(".html", "");
-      var newPath = segments.join("/");
-      var newUrl = `${baseDomain}/${newPath}/${lastSegment}`;
-      console.log("Transformed URL:", newUrl);
+      const newUrl = url.replace(
+        "sites.html",
+        "editor.html"
+      ) + ".html";
+      console.log("View in Admin Transformed URL:", newUrl);
       window.open(newUrl, "_blank");
     } else {
       alert("The current page URL does not match the expected format.");
@@ -170,6 +200,7 @@ function showQuickActionsMenu(badge) {
   menu.appendChild(message);
   menu.appendChild(editorButton);
   menu.appendChild(adminButton);
+  menu.appendChild(viewAdminButton); // Append new button
   document.body.appendChild(menu);
 
   // Smoothly move the menu into place
@@ -177,6 +208,7 @@ function showQuickActionsMenu(badge) {
     menu.style.transform = "translateX(0)";
   }, 10);
 }
+
 
 function makeDraggable(el) {
   let isDragging = false;
@@ -204,7 +236,7 @@ function makeDraggable(el) {
 function displayQuickActions() {
   const htmlTag = document.querySelector("html");
   if (htmlTag) {
-    createQuickActionBadge(`Quick Actions`, 150, "rgba(135, 206, 250, 0.3)");
+    createQuickActionBadge(`Quick Actions`, 150, "rgba(250, 135, 217, 0.3)");
   }
 }
 
