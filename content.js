@@ -1,3 +1,240 @@
+// Floating Badges
+function displayQuickActions() {
+  const htmlTag = document.querySelector("html");
+  if (htmlTag) {
+    createQuickActionBadge(`Quick Actions`, 150, "rgba(250, 135, 217, 0.3)");
+  }
+}
+function displayLocaleBadge() {
+  const htmlTag = document.querySelector("html");
+  if (htmlTag) {
+    const lang = htmlTag.getAttribute("lang");
+    if (lang) {
+      createFloatingBadge(`Locale: ${lang}`, 100, "rgba(135, 206, 250, 0.3)");
+    }
+  }
+}
+function displayEnvironmentBadge(environment) {
+  if (environment == "Stage") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgba(119, 255, 73, 0.3)"
+    );
+  }
+  if (environment == "Dev") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgba(73, 132, 255, 0.3)"
+    );
+  }
+  if (environment == "Prod") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgba(255, 73, 73, 0.3)"
+    );
+  }
+}
+
+// Quick actions Menu
+function showQuickActionsMenu(badge) {
+  const menu = document.createElement("div");
+  menu.className = "quick-actions-menu";
+  menu.style.position = "fixed";
+  menu.style.display = "block";
+  menu.style.bottom = badge.style.bottom;
+  menu.style.right = "calc(10px + " + badge.offsetWidth + "px)";
+  menu.style.width = "200px";
+  menu.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  menu.style.color = "black";
+  menu.style.padding = "10px";
+  menu.style.borderRadius = "8px";
+  menu.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.2)";
+  menu.style.zIndex = "10001";
+  menu.style.transition = "transform 0.3s ease"; // Smooth transition
+  menu.style.transform = "translateX(10px)";
+  menu.style.opacity = "1";
+
+  // Menu content
+  const message = document.createElement("div");
+  message.textContent = "You are on " + getFlavour() + ":";
+  message.style.marginBottom = "10px";
+  message.style.color = "white";
+
+  // Button for VAP to Editor
+  const vapToEditorButton = document.createElement("button");
+  vapToEditorButton.textContent = "Go to Editor";
+  vapToEditorButton.style.width = "100%";
+  vapToEditorButton.style.padding = "5px";
+  vapToEditorButton.style.backgroundColor = "lightblue";
+  vapToEditorButton.style.border = "none";
+  vapToEditorButton.style.borderRadius = "4px";
+  vapToEditorButton.style.cursor = "pointer";
+
+  // Button for Editor to Admin
+  const editorToAdminButton = document.createElement("button");
+  editorToAdminButton.textContent = "Go to Admin";
+  editorToAdminButton.style.width = "100%";
+  editorToAdminButton.style.padding = "5px";
+  editorToAdminButton.style.marginTop = "5px";
+  editorToAdminButton.style.backgroundColor = "lightgreen";
+  editorToAdminButton.style.border = "none";
+  editorToAdminButton.style.borderRadius = "4px";
+  editorToAdminButton.style.cursor = "pointer";
+
+  // New Button for View in Admin
+  const adminToEditorBtton = document.createElement("button");
+  adminToEditorBtton.textContent = "Go to Editor";
+  adminToEditorBtton.style.width = "100%";
+  adminToEditorBtton.style.padding = "5px";
+  adminToEditorBtton.style.marginTop = "5px";
+  adminToEditorBtton.style.backgroundColor = "yellow";
+  adminToEditorBtton.style.border = "none";
+  adminToEditorBtton.style.borderRadius = "4px";
+  adminToEditorBtton.style.cursor = "pointer";
+
+  // New Button for Admin to VAP
+  const adminToVapButton = document.createElement("button");
+  adminToVapButton.textContent = "Go to VAP";
+  adminToVapButton.style.width = "100%";
+  adminToVapButton.style.padding = "5px";
+  adminToVapButton.style.marginTop = "5px";
+  adminToVapButton.style.backgroundColor = "orange";
+  adminToVapButton.style.border = "none";
+  adminToVapButton.style.borderRadius = "4px";
+  adminToVapButton.style.cursor = "pointer";
+
+  // New Button for Delete Cache
+  const cleanCacheButton = document.createElement("button");
+  cleanCacheButton.textContent = "Clean Cache";
+  cleanCacheButton.style.width = "100%";
+  cleanCacheButton.style.padding = "5px";
+  cleanCacheButton.style.marginTop = "5px";
+  cleanCacheButton.style.backgroundColor = "red";
+  cleanCacheButton.style.border = "none";
+  cleanCacheButton.style.borderRadius = "4px";
+  cleanCacheButton.style.cursor = "pointer";
+
+  // URLS's Logic
+  vapToEditorButton.addEventListener("click", () => {
+    const u = location.href.split(".net/");
+    window.open(
+      u[0] + ".net/editor.html/" + u[1].split("?wcmmode=disabled")[0],
+      "_blank"
+    );
+  });
+  editorToAdminButton.addEventListener("click", () => {
+    var url = window.location.href;
+
+    // Make sure we're in the editor context
+    if (
+      url.includes("https://author-colgate-stage-65.adobecqms.net/editor.html/content/")
+    ) {
+      // Remove the editor.html part and the .html extension from the content URL
+      var path = url.replace(
+        "https://author-colgate-stage-65.adobecqms.net/editor.html/content/",
+        ""
+      );
+      var cleanPath = path.replace(".html", "");
+
+      // Rebuild the URL for the admin view
+      var newUrl =
+        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" + cleanPath;
+      window.open(newUrl, "_blank");
+    } else {
+      alert("The current page URL does not match the expected format.");
+    }
+  });
+  adminToVapButton.addEventListener("click", () => {
+    const url = window.location.href;
+    if (
+      url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
+    ) {
+      // Delete extra stuff
+      if (url.includes("?wcmmode=disabled")) {
+        url.replace("?wcmmode=disabled", "");
+      }
+
+      const newUrl = url.replace("sites.html/", "") + ".html";
+      window.open(newUrl, "_blank");
+    } else {
+      alert(
+        "You seem not to be on an admin page, or you have not clicked the page you want to go to."
+      );
+    }
+  });
+  adminToEditorBtton.addEventListener("click", () => {
+    const url = window.location.href;
+    if (
+      url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
+    ) {
+      const newUrl = url.replace("sites.html", "editor.html") + ".html";
+      window.open(newUrl, "_blank");
+    } else {
+      alert("The current page URL does not match the expected format.");
+    }
+  });
+  cleanCacheButton.addEventListener("click", () => {
+    if ("caches" in window) {
+      caches.keys().then((names) => {
+        names.forEach((name) => {
+          caches.delete(name);
+        });
+      });
+      console.log("Site cache cleared.");
+    } else {
+      console.log("Cache API not supported.");
+    }
+    alert("About to clean cache on " + window.url);
+    window.location.reload(true);
+  });
+
+  menu.appendChild(message);
+
+  if (getFlavour() == "Editor") {
+    menu.appendChild(editorToAdminButton);
+  }
+  if (getFlavour() == "Vap") {
+    menu.appendChild(vapToEditorButton);
+  }
+  if (getFlavour() == "Admin") {
+    menu.appendChild(adminToEditorBtton);
+    menu.appendChild(adminToVapButton);
+  }
+
+  menu.appendChild(cleanCacheButton);
+  document.body.appendChild(menu);
+
+  setTimeout(() => {
+    menu.style.transform = "translateX(0)";
+  }, 10);
+}
+
+// Helper Functions
+function makeDraggable(el) {
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  el.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - el.getBoundingClientRect().left;
+    offsetY = e.clientY - el.getBoundingClientRect().top;
+    el.style.position = "fixed";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      el.style.left = `${e.clientX - offsetX}px`;
+      el.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+}
 function createFloatingBadge(
   text,
   bottomOffset = 50,
@@ -32,7 +269,6 @@ function createFloatingBadge(
 
   makeDraggable(badge);
 }
-
 function createQuickActionBadge(
   text,
   bottomOffset = 50,
@@ -69,7 +305,6 @@ function createQuickActionBadge(
     toggleQuickActionsMenu(badge);
   });
 }
-
 function toggleQuickActionsMenu(badge) {
   let existingMenu = document.querySelector(".quick-actions-menu");
 
@@ -90,192 +325,46 @@ function toggleQuickActionsMenu(badge) {
   }
 }
 
-function showQuickActionsMenu(badge) {
-  const menu = document.createElement("div");
-  menu.className = "quick-actions-menu";
-  menu.style.position = "fixed";
-  menu.style.display = "block";
-  menu.style.bottom = badge.style.bottom;
-  menu.style.right = "calc(10px + " + badge.offsetWidth + "px)";
-  menu.style.width = "200px";
-  menu.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-  menu.style.color = "black";
-  menu.style.padding = "10px";
-  menu.style.borderRadius = "8px";
-  menu.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.2)";
-  menu.style.zIndex = "10001";
-  menu.style.transition = "transform 0.3s ease"; // Smooth transition
-  menu.style.transform = "translateX(10px)";
-  menu.style.opacity = "1";
-
-  // Menu content
-  const message = document.createElement("div");
-  message.textContent = "Quick Actions:";
-  message.style.marginBottom = "10px";
-  message.style.color = "white";
-
-  // Button for VAP to Editor
-  const editorButton = document.createElement("button");
-  editorButton.textContent = "VAP to Editor";
-  editorButton.style.width = "100%";
-  editorButton.style.padding = "5px";
-  editorButton.style.backgroundColor = "lightblue";
-  editorButton.style.border = "none";
-  editorButton.style.borderRadius = "4px";
-  editorButton.style.cursor = "pointer";
-  editorButton.addEventListener("click", () => {
-    const u = location.href.split(".net/");
-    window.open(
-      u[0] + ".net/editor.html/" + u[1].split("?wcmmode=disabled")[0],
-      "_blank"
-    );
-  });
-
-  // Button for Editor to Admin
-  const adminButton = document.createElement("button");
-adminButton.textContent = "Editor to Admin";
-adminButton.style.width = "100%";
-adminButton.style.padding = "5px";
-adminButton.style.marginTop = "5px";
-adminButton.style.backgroundColor = "lightgreen";
-adminButton.style.border = "none";
-adminButton.style.borderRadius = "4px";
-adminButton.style.cursor = "pointer";
-adminButton.addEventListener("click", () => {
-  var url = window.location.href;
-
-  // Make sure we're in the editor context
-  if (
-    url.startsWith(
-      "https://author-colgate-stage-65.adobecqms.net/editor.html/content/"
-    )
-  ) {
-    // Remove the editor.html part and the .html extension from the content URL
-    var path = url.replace(
-      "https://author-colgate-stage-65.adobecqms.net/editor.html/content/",
-      ""
-    );
-    var cleanPath = path.replace(".html", "");
-
-    // Rebuild the URL for the admin view
-    var newUrl =
-      "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" +
-      cleanPath;
-    console.log("Transformed URL:", newUrl);
-    window.open(newUrl, "_blank");
-  } else {
-    alert("The current page URL does not match the expected format.");
-  }
-});
-
-
-  // New Button for View in Admin
-  const viewAdminButton = document.createElement("button");
-  viewAdminButton.textContent = "Admin to Editor";
-  viewAdminButton.style.width = "100%";
-  viewAdminButton.style.padding = "5px";
-  viewAdminButton.style.marginTop = "5px";
-  viewAdminButton.style.backgroundColor = "yellow";
-  viewAdminButton.style.border = "none";
-  viewAdminButton.style.borderRadius = "4px";
-  viewAdminButton.style.cursor = "pointer";
-  viewAdminButton.addEventListener("click", () => {
-    const url = window.location.href;
-    if (
-      url.startsWith(
-        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/"
-      )
-    ) {
-      const newUrl = url.replace(
-        "sites.html",
-        "editor.html"
-      ) + ".html";
-      console.log("View in Admin Transformed URL:", newUrl);
-      window.open(newUrl, "_blank");
-    } else {
-      alert("The current page URL does not match the expected format.");
-    }
-  });
-
-  menu.appendChild(message);
-  menu.appendChild(editorButton);
-  menu.appendChild(adminButton);
-  menu.appendChild(viewAdminButton); // Append new button
-  document.body.appendChild(menu);
-
-  // Smoothly move the menu into place
-  setTimeout(() => {
-    menu.style.transform = "translateX(0)";
-  }, 10);
-}
-
-
-function makeDraggable(el) {
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  el.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    offsetX = e.clientX - el.getBoundingClientRect().left;
-    offsetY = e.clientY - el.getBoundingClientRect().top;
-    el.style.position = "fixed";
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      el.style.left = `${e.clientX - offsetX}px`;
-      el.style.top = `${e.clientY - offsetY}px`;
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
-}
-
-function displayQuickActions() {
-  const htmlTag = document.querySelector("html");
-  if (htmlTag) {
-    createQuickActionBadge(`Quick Actions`, 150, "rgba(250, 135, 217, 0.3)");
-  }
-}
-
-function displayLocaleBadge() {
-  const htmlTag = document.querySelector("html");
-  if (htmlTag) {
-    const lang = htmlTag.getAttribute("lang");
-    if (lang) {
-      createFloatingBadge(`Locale: ${lang}`, 100, "rgba(135, 206, 250, 0.3)");
-    }
-  }
-}
-
-function displayEnvironmentBadge(environment) {
-  if (environment == "Stage") {
-    createFloatingBadge(
-      `Environment: ${environment}`,
-      50,
-      "rgba(119, 255, 73, 0.3)"
-    );
-  }
-  if (environment == "Prod") {
-    createFloatingBadge(
-      `Environment: ${environment}`,
-      50,
-      "rgba(255, 73, 73, 0.3)"
-    );
-  }
-}
-
-function init() {
+function getEnvironment() {
   const currentUrl = window.location.href.toLowerCase();
+
   let environment = "";
 
-  if (currentUrl.includes("prod")) {
+  if (currentUrl.includes("author-colgate-prod")) {
     environment = "Prod";
-  } else if (currentUrl.includes("stage")) {
+  } else if (currentUrl.includes("author-colgate-stage")) {
     environment = "Stage";
+  } else if (currentUrl.includes("3.95.170.167:4502")) {
+    environment = "Dev";
   }
+  return environment;
+}
+
+function getFlavour() {
+  const url = window.location.href;
+  let ret = "";
+
+  if (
+    url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
+  ) {
+    ret = "Admin";
+  } else if (
+    url.includes("author-colgate-stage-65.adobecqms.net/editor.html/content/")
+  ) {
+    ret = "Editor";
+  } else if (url.includes("author-colgate-stage-65.adobecqms.net/content/")) {
+    ret = "Vap";
+  }
+
+  return ret;
+}
+
+// Initialize Popup
+function init() {
+  let environment = getEnvironment();
+  
+  getFlavour();
+
   if (environment) {
     displayEnvironmentBadge(environment);
     displayQuickActions();
@@ -284,3 +373,16 @@ function init() {
 }
 
 init();
+
+// function to delete cache, i need to add it as a quick actions button
+// if ('caches' in window) {
+//   caches.keys().then((names) => {
+//     names.forEach((name) => {
+//       caches.delete(name);
+//     });
+//   });
+//   console.log("Site cache cleared.");
+// } else {
+//   console.log("Cache API not supported.");
+// }
+// window.location.reload(true); // Reload the page and force revalidation from the server

@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   loadDataFromStorage();
-  
 });
 
 function saveBasicUrlsToStorage(basicUrls) {
