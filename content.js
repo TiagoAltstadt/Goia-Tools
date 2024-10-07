@@ -130,7 +130,9 @@ function showQuickActionsMenu(badge) {
 
     // Make sure we're in the editor context
     if (
-      url.includes("https://author-colgate-stage-65.adobecqms.net/editor.html/content/")
+      url.includes(
+        "https://author-colgate-stage-65.adobecqms.net/editor.html/content/"
+      )
     ) {
       // Remove the editor.html part and the .html extension from the content URL
       var path = url.replace(
@@ -141,7 +143,8 @@ function showQuickActionsMenu(badge) {
 
       // Rebuild the URL for the admin view
       var newUrl =
-        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" + cleanPath;
+        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" +
+        cleanPath;
       window.open(newUrl, "_blank");
     } else {
       alert("The current page URL does not match the expected format.");
@@ -183,9 +186,6 @@ function showQuickActionsMenu(badge) {
           caches.delete(name);
         });
       });
-      console.log("Site cache cleared.");
-    } else {
-      console.log("Cache API not supported.");
     }
     alert("About to clean cache on " + document.title);
     window.location.reload(true);
@@ -362,7 +362,7 @@ function getFlavour() {
 // Initialize Popup
 function init() {
   let environment = getEnvironment();
-  
+
   getFlavour();
 
   if (environment) {
