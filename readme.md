@@ -10,11 +10,13 @@ Accesos directos a las cuentas:
 - Stage: Admin. Editor y Vap
 - Jenkins
 - Bitbucket
+
 Botones de accion rapida para cambio de entorno
 - VAP a Editor (Ida y vuelta)
 - Editor a Admin (Ida y vuelta)
 - Admin a VAP (Ida y vuelta)
-Boton de Borrar cache
+
+Boton de Borrar cache 
 Identificador de entorno
 Identificador de local
 Contador de sitios
