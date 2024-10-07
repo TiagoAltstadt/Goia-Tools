@@ -5,7 +5,21 @@ Bueno ahi esta para testear la extension que hice.
 
 ## Que Hace
 
-Tiene accesos directos de todos los proyectos a VAP, Editor, Path, Jenkins, Bitbucket y Live; Muestra el environment en el que estas (Stage o Prod) de colores para no mandarnos macanas, muestra el locale, Muestra el Path de cada locale, Permite tener todos toda la info al dia y compartirla entre nosotros para tener todo actualizado con los ultimos links de las cosas, No rompe ninguna ley de privacidad ya que el unico archivo sensible es data.json que lo compartimos entre nosotros por chat (de momento).
+Accesos directos a las cuentas:
+- Prod: Admin. Editor y Vap
+- Stage: Admin. Editor y Vap
+- Jenkins
+- Bitbucket
+Botones de accion rapida para cambio de entorno
+- VAP a Editor (Ida y vuelta)
+- Editor a Admin (Ida y vuelta)
+- Admin a VAP (Ida y vuelta)
+Boton de Borrar cache
+Identificador de entorno
+Identificador de local
+Contador de sitios
+Facil importacion/exportacion de datos
+
 
 ## Como instalar
 
