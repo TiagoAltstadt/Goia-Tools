@@ -17,9 +17,13 @@ Botones de accion rapida para cambio de entorno
 - Admin a VAP (Ida y vuelta)
 
 Boton de Borrar cache 
+
 Identificador de entorno
+
 Identificador de local
+
 Contador de sitios
+
 Facil importacion/exportacion de datos
 
 
