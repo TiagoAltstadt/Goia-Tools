@@ -187,7 +187,7 @@ function showQuickActionsMenu(badge) {
     } else {
       console.log("Cache API not supported.");
     }
-    alert("About to clean cache on " + window.url);
+    alert("About to clean cache on " + document.title);
     window.location.reload(true);
   });
 
