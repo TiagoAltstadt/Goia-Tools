@@ -1,9 +1,8 @@
-# Goia Tools ⚡
-![alt text](https://github.com/TiagoAltstadt/Goia-Tools/blob/master/assets/home.png?raw=true)
+# ⚡ Goia Tools ⚡
 
-Bueno ahi esta para testear la extension que hice.
+Extension de Chrome para facilitar el workflow de los devs de colgate-palmolive
 
-## Que Hace
+## Que Hago?
 
 Accesos directos a las cuentas:
 - Prod: Admin. Editor y Vap
@@ -27,9 +26,9 @@ Contador de sitios
 Facil importacion/exportacion de datos
 
 
-## Como instalar
+## Como me instalo?
 
-Te vas a  ´chrome://extensions/´  y de ahi a Cargar extension sin empaquetar.
+Entra a  ´chrome://extensions/´  y de ahi a Cargar extension sin empaquetar.
 
 Elegis la carpeta que adjunte a este mensaje y ya deberias tenerla en el rompecabezas de arriba a la derecha.
 
@@ -45,4 +44,4 @@ Una vez entren a un dominio de stage o prod, van a aparecer dos popups chiquitit
 
 
 ## Disclaimer
-Si tienen errores mandenme que onda asi los voy arreglando en mi tiempo libre, mismo con las ideas, el codigo lo tengo en github publico total no tiene info sensible, si quieren modificarlo avisenme y los agrego como colaboradores. 
+En caso de tener Ideas, criticas constructivas o identificar bugs, avisame por teams (Tiago Altstadt) asi lo arreglo, o mejor aun, en caso de que quieras colaborar, clona el repo, hace tu modificacion y enviame un PR para colabora con el proyecto!
