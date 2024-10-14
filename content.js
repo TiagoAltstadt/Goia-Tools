@@ -44,10 +44,8 @@ function showQuickActionsMenu(badge) {
   menu.className = "quick-actions-menu";
   menu.style.position = "fixed";
   menu.style.display = "block";
-  menu.style.bottom = badge.style.bottom;
   menu.style.right = "calc(10px + " + badge.offsetWidth + "px)";
-  menu.style.width = "200px";
-  menu.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  menu.style.width = "365px";
   menu.style.color = "black";
   menu.style.padding = "10px";
   menu.style.borderRadius = "8px";
@@ -56,12 +54,23 @@ function showQuickActionsMenu(badge) {
   menu.style.transition = "transform 0.3s ease"; // Smooth transition
   menu.style.transform = "translateX(10px)";
   menu.style.opacity = "1";
+  menu.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  menu.style.bottom = badge.style.bottom;
 
   // Menu content
   const message = document.createElement("div");
   message.textContent = "You are on " + getFlavour() + ":";
   message.style.marginBottom = "10px";
   message.style.color = "white";
+
+  // Menu path
+  const path = document.createElement("div");
+  const pathValue = document
+    .querySelector("body")
+    .getAttribute("data-theme-path");
+  path.textContent = "Path: \n" + pathValue ? pathValue : "Unknown path";
+  path.style.marginBottom = "10px";
+  path.style.color = "gray";
 
   // Button for VAP to Editor
   const vapToEditorButton = document.createElement("button");
@@ -84,7 +93,7 @@ function showQuickActionsMenu(badge) {
   editorToAdminButton.style.borderRadius = "4px";
   editorToAdminButton.style.cursor = "pointer";
 
-  // New Button for View in Admin
+  // Button for View in Admin
   const adminToEditorBtton = document.createElement("button");
   adminToEditorBtton.textContent = "Go to Editor";
   adminToEditorBtton.style.width = "100%";
@@ -95,7 +104,7 @@ function showQuickActionsMenu(badge) {
   adminToEditorBtton.style.borderRadius = "4px";
   adminToEditorBtton.style.cursor = "pointer";
 
-  // New Button for Admin to VAP
+  // Button for Admin to VAP
   const adminToVapButton = document.createElement("button");
   adminToVapButton.textContent = "Go to VAP";
   adminToVapButton.style.width = "100%";
@@ -106,7 +115,7 @@ function showQuickActionsMenu(badge) {
   adminToVapButton.style.borderRadius = "4px";
   adminToVapButton.style.cursor = "pointer";
 
-  // New Button for Delete Cache
+  // Button for Delete Cache
   const cleanCacheButton = document.createElement("button");
   cleanCacheButton.textContent = "Clean Cache";
   cleanCacheButton.style.width = "100%";
@@ -117,7 +126,55 @@ function showQuickActionsMenu(badge) {
   cleanCacheButton.style.borderRadius = "4px";
   cleanCacheButton.style.cursor = "pointer";
 
+  path.addEventListener("click", () => {
+    navigator.clipboard
+      .writeText(pathValue)
+      .then(() => {
+        // Display a notification
+        const copiedMessage = document.createElement("div");
+        copiedMessage.textContent = "Text copied!";
+        copiedMessage.style.position = "fixed";
+        copiedMessage.style.bottom = "200px";
+        copiedMessage.style.right = "10px";
+        copiedMessage.style.maxWidth = "300px";
+        copiedMessage.style.maxWidth = "fit-content";
+        copiedMessage.style.minWidth = "fit-content";
+        copiedMessage.style.height = "fit-content";
+        copiedMessage.style.backgroundColor = "rgba(247, 255, 49, 0.3)";
+        copiedMessage.style.color = "black";
+        copiedMessage.style.padding = "10px 15px";
+        copiedMessage.style.borderRadius = "8px";
+        copiedMessage.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.2)";
+        copiedMessage.style.zIndex = "10000";
+        copiedMessage.style.cursor = "move";
+        copiedMessage.style.fontFamily = "'Nunito', sans-serif";
+        copiedMessage.style.fontSize = "0.9em";
+
+        copiedMessage.style.backdropFilter = "blur(4.6px)";
+        copiedMessage.style.webkitBackdropFilter = "blur(4.6px)"; // Webkit-specific property
+        copiedMessage.style.border = "1px solid rgba(255, 255, 255, 0.69)";
+
+        document.body.appendChild(copiedMessage);
+
+        // Remove the message after 2 seconds
+        setTimeout(() => {
+          document.body.removeChild(copiedMessage);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  });
+
   // URLS's Logic
+  editorToAdminButton.addEventListener("click", () => {
+    switchEditorAdmin();
+  });
+  adminToEditorBtton.addEventListener("click", () => {
+    switchEditorAdmin();
+  });
+
+  // The following need optimization or implementation of above logic
   vapToEditorButton.addEventListener("click", () => {
     const u = location.href.split(".net/");
     window.open(
@@ -125,31 +182,7 @@ function showQuickActionsMenu(badge) {
       "_blank"
     );
   });
-  editorToAdminButton.addEventListener("click", () => {
-    var url = window.location.href;
 
-    // Make sure we're in the editor context
-    if (
-      url.includes(
-        "https://author-colgate-stage-65.adobecqms.net/editor.html/content/"
-      )
-    ) {
-      // Remove the editor.html part and the .html extension from the content URL
-      var path = url.replace(
-        "https://author-colgate-stage-65.adobecqms.net/editor.html/content/",
-        ""
-      );
-      var cleanPath = path.replace(".html", "");
-
-      // Rebuild the URL for the admin view
-      var newUrl =
-        "https://author-colgate-stage-65.adobecqms.net/sites.html/content/" +
-        cleanPath;
-      window.open(newUrl, "_blank");
-    } else {
-      alert("The current page URL does not match the expected format.");
-    }
-  });
   adminToVapButton.addEventListener("click", () => {
     const url = window.location.href;
     if (
@@ -168,17 +201,6 @@ function showQuickActionsMenu(badge) {
       );
     }
   });
-  adminToEditorBtton.addEventListener("click", () => {
-    const url = window.location.href;
-    if (
-      url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
-    ) {
-      const newUrl = url.replace("sites.html", "editor.html") + ".html";
-      window.open(newUrl, "_blank");
-    } else {
-      alert("The current page URL does not match the expected format.");
-    }
-  });
   cleanCacheButton.addEventListener("click", () => {
     if ("caches" in window) {
       caches.keys().then((names) => {
@@ -192,6 +214,7 @@ function showQuickActionsMenu(badge) {
   });
 
   menu.appendChild(message);
+  menu.appendChild(path);
 
   if (getFlavour() == "Editor") {
     menu.appendChild(editorToAdminButton);
@@ -324,6 +347,67 @@ function toggleQuickActionsMenu(badge) {
     showQuickActionsMenu(badge);
   }
 }
+function switchEditorAdmin() {
+  var url = window.location.href;
+
+  // Editor -> Admin
+  if (url.includes("editor.html")) {
+    url = url.replace("editor.html", "sites.html").slice(0, -5);
+    window.open(url, "_blank");
+  }
+  // Admin -> Editor
+  else if (url.includes("sites.html")) {
+    url = url.replace("sites.html", "editor.html") + ".html";
+    window.open(url, "_blank");
+  } else {
+    alert("This is not Editor nor Admin");
+  }
+}
+function switchAdminVap() {
+  var url = window.location.href;
+  // Admin -> VAP
+  if (isAdmin(url)) {
+    url = url.replace("sites.html", "").slice(0, -5);
+    window.open(url, "_blank");
+  }
+  // VAP -> Admin
+  else if (isVap(url)) {
+  }
+}
+
+function isVap(url) {
+  return url.slice(-5) == ".html" && !url.includes("editor.html");
+}
+function isEditor(url) {
+  return url.includes("editor.html") && url.slice(0, -5) == ".html";
+}
+function isAdmin(url) {
+  return url.includes("sites.html");
+}
+
+function detectOverrides() {
+  const elements = document.querySelectorAll("*");
+  for (const element of elements) {
+    const computedStyle = window.getComputedStyle(element);
+    for (const property of computedStyle) {
+      const priority = computedStyle.getPropertyPriority(property);
+      if (priority === "important") {
+        console.log("Override detected:", element, property);
+        // Add a badge or highlight the element here
+      } else {
+        console.log("No Override detected");
+      }
+    }
+  }
+}
+
+const VAP =
+  "https://author-colgate-stage-65.adobecqms.net/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources.html?wcmmode=disabled";
+const Admin =
+  "https://author-colgate-stage-65.adobecqms.net/sites.html/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources";
+
+const Editor =
+  "https://author-colgate-stage-65.adobecqms.net/editor.html/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources.html";
 
 function getEnvironment() {
   const currentUrl = window.location.href.toLowerCase();
@@ -354,6 +438,8 @@ function getFlavour() {
     ret = "Editor";
   } else if (url.includes("author-colgate-stage-65.adobecqms.net/content/")) {
     ret = "Vap";
+  } else if (url.includes("3.95.170.167:4502")) {
+    ret = "DEV";
   }
 
   return ret;
@@ -369,6 +455,7 @@ function init() {
     displayEnvironmentBadge(environment);
     displayQuickActions();
     displayLocaleBadge();
+    // detectOverrides();
   }
 }
 
