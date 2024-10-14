@@ -115,6 +115,18 @@ function showQuickActionsMenu(badge) {
   adminToVapButton.style.borderRadius = "4px";
   adminToVapButton.style.cursor = "pointer";
 
+  // Button for Stage <-> Prod swap
+  const stageProdSwapButton = document.createElement("button");
+  stageProdSwapButton.textContent =
+    getEnvironment() == "Prod" ? "Go to Stage" : "Go to Prod";
+  stageProdSwapButton.style.width = "100%";
+  stageProdSwapButton.style.padding = "5px";
+  stageProdSwapButton.style.marginTop = "5px";
+  stageProdSwapButton.style.backgroundColor = "yellow";
+  stageProdSwapButton.style.border = "none";
+  stageProdSwapButton.style.borderRadius = "4px";
+  stageProdSwapButton.style.cursor = "pointer";
+
   // Button for Delete Cache
   const cleanCacheButton = document.createElement("button");
   cleanCacheButton.textContent = "Clean Cache";
@@ -166,6 +178,16 @@ function showQuickActionsMenu(badge) {
       });
   });
 
+  stageProdSwapButton.addEventListener("click", () => {
+    var url = window.location.href;
+    if (url.includes("author-colgate-prod")) {
+      url = url.replace("author-colgate-prod", "author-colgate-stage");
+      window.open(url, "_blank");
+    } else if (url.includes("author-colgate-stage")) {
+      url = url.replace("author-colgate-stage", "author-colgate-prod");
+      window.open(url, "_blank");
+    }
+  });
   // URLS's Logic
   editorToAdminButton.addEventListener("click", () => {
     switchEditorAdmin();
@@ -227,6 +249,7 @@ function showQuickActionsMenu(badge) {
     menu.appendChild(adminToVapButton);
   }
 
+  menu.appendChild(stageProdSwapButton);
   menu.appendChild(cleanCacheButton);
   document.body.appendChild(menu);
 
