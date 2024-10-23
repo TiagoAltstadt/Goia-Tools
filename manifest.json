@@ -5,7 +5,9 @@
   "description": "Features: Notify Environment, Notify Locale, Organize and enables quick access button to many different URL's, share it with your team button, etc",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs",
+    "activeTab"
   ],
   "host_permissions": [
     "http://*/*",

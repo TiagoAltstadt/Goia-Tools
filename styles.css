@@ -68,6 +68,14 @@
     transition: transform 0.3s ease;
     background: var(--primary-color);
   }
+
+  .buttons-row{
+    display: flex;
+    justify-content: space-evenly;
+    button{
+      width: fit-content;
+    }
+  }
 }
 
 #goiaToolsBody .title {

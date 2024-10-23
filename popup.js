@@ -3,22 +3,31 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDataFromStorage();
 });
 
+document.querySelector("#goToVapButton").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "goToVap" });
+  });
+});
+
+
 // Messager for content.js ----------------------------------------
 document.querySelector("#hideBadgesButton").addEventListener("click", () => {
   const button = document.querySelector("#hideBadgesButton");
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "toggleBadges" }, (response) => {
-      if (response.status === "badges visible") {
-        button.textContent = "Hide Badges";
-      } else if (response.status === "badges hidden") {
-        button.textContent = "Show Badges";
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { action: "toggleBadges" },
+      (response) => {
+        if (response.status === "badges visible") {
+          button.textContent = "Hide Badges";
+        } else if (response.status === "badges hidden") {
+          button.textContent = "Show Badges";
+        }
       }
-    });
+    );
   });
 });
-
-
 
 // Functions
 function saveBasicUrlsToStorage(basicUrls) {

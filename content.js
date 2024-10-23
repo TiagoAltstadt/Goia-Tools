@@ -11,7 +11,6 @@ const adminIdentification = ".adobecqms.net/sites.html/content/";
 const editorIdentification = ".adobecqms.net/editor.html/content/";
 const vapIdentificator = ".adobecqms.net/content/";
 
-
 // Listener from popup.js ----------------------------------------
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -33,10 +32,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
       sendResponse({ status: "badges hidden" });
     }
+  } else if (message.action === "goToVap") {
+    // holly s*it this one is harder than it looks (that's what she said), il leave it for later...
   }
 });
-
-
 
 // Floating Badges ----------------------------------------
 function displayQuickActions() {
