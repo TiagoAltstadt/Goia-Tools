@@ -45,3 +45,5 @@ Una vez entren a un dominio de stage o prod, van a aparecer dos popups chiquitit
 
 ## Disclaimer
 En caso de tener Ideas, criticas constructivas o identificar bugs, avisame por teams (Tiago Altstadt) asi lo arreglo, o mejor aun, en caso de que quieras colaborar, clona el repo, hace tu modificacion y enviame un PR para colabora con el proyecto!
+
+## [Trello](https://trello.com/b/2EgmGm0m/goia-tools)

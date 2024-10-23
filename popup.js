@@ -3,12 +3,29 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDataFromStorage();
 });
 
+// Messager for content.js ----------------------------------------
+document.querySelector("#hideBadgesButton").addEventListener("click", () => {
+  const button = document.querySelector("#hideBadgesButton");
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "toggleBadges" }, (response) => {
+      if (response.status === "badges visible") {
+        button.textContent = "Hide Badges";
+      } else if (response.status === "badges hidden") {
+        button.textContent = "Show Badges";
+      }
+    });
+  });
+});
+
+
+
+// Functions
 function saveBasicUrlsToStorage(basicUrls) {
   chrome.storage.local.set({ basicUrls }, () => {
     console.log("Basic URLs successfully saved to storage.");
   });
 }
-
 function setupEventListeners() {
   document.getElementById("clearData").addEventListener("click", clearAllData);
   document
@@ -22,11 +39,9 @@ function setupEventListeners() {
     .getElementById("fileInput")
     .addEventListener("change", handleFileUpload);
 }
-
 function triggerFileInput() {
   document.getElementById("fileInput").click();
 }
-
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
@@ -53,8 +68,7 @@ function handleFileUpload(event) {
     reader.readAsText(file);
   }
 }
-
-function createComponent(component) {
+function createAccountComponent(component) {
   const container = document.createElement("div");
   container.className = "component blur";
   container.id = `component-${component.id}`;
@@ -66,7 +80,6 @@ function createComponent(component) {
 
   return container;
 }
-
 function createTitle(name) {
   const title = document.createElement("h3");
   title.textContent = name;
@@ -76,14 +89,12 @@ function createTitle(name) {
   };
   return title;
 }
-
 function createPathSubtitle(path) {
   const pathSubtitle = document.createElement("div");
   pathSubtitle.className = "path-subtitle";
   pathSubtitle.textContent = path;
   return pathSubtitle;
 }
-
 function createButtonContainer(component) {
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
@@ -112,7 +123,6 @@ function createButtonContainer(component) {
 
   return buttonContainer;
 }
-
 function createButtonRow(group, groupButtons) {
   const row = document.createElement("div");
   row.className = "button-row";
@@ -135,7 +145,6 @@ function createButtonRow(group, groupButtons) {
 
   return row;
 }
-
 function createEditButton(component, container) {
   const editButton = document.createElement("button");
   editButton.className = "edit-button";
@@ -147,6 +156,7 @@ function createEditButton(component, container) {
   return editButton;
 }
 
+// Helper Functions
 function toggleQuickActions(titleElement) {
   const buttonContainer = titleElement.nextElementSibling.nextElementSibling;
 
@@ -155,7 +165,6 @@ function toggleQuickActions(titleElement) {
       buttonContainer.style.display === "none" ? "flex" : "none";
   }
 }
-
 function toggleEditButton() {
   const editButtons = document.querySelectorAll(".edit-button");
   editButtons.forEach((editButton) => {
@@ -163,7 +172,6 @@ function toggleEditButton() {
       editButton.style.display === "none" ? "block" : "none";
   });
 }
-
 function openEditForm(component, container) {
   let form = container.querySelector(".edit-form");
   if (!form) {
@@ -173,7 +181,6 @@ function openEditForm(component, container) {
     form.style.display = "block";
   }
 }
-
 function createEditForm(component) {
   const form = document.createElement("div");
   form.className = "edit-form";
@@ -219,7 +226,6 @@ function createEditForm(component) {
 
   return form;
 }
-
 function createInputField({ label, value, placeholder }) {
   const labelElement = document.createElement("label");
   labelElement.textContent = label;
@@ -234,7 +240,6 @@ function createInputField({ label, value, placeholder }) {
 
   return container;
 }
-
 function createFormButtons(component, form) {
   const buttonContainer = document.createElement("div");
 
@@ -254,7 +259,6 @@ function createFormButtons(component, form) {
 
   return buttonContainer;
 }
-
 async function saveEdit(component, form) {
   updateComponentData(component, form);
 
@@ -269,7 +273,6 @@ async function saveEdit(component, form) {
   form.remove();
   renderComponents(updatedComponents);
 }
-
 function updateComponentData(component, form) {
   component.name = form.querySelector("input[placeholder='Name']").value;
   component.Path = form.querySelector("input[placeholder='Path']").value;
@@ -293,7 +296,6 @@ function updateComponentData(component, form) {
     "input[placeholder='Jenkins URL']"
   ).value;
 }
-
 function ensureAbsoluteUrl(url) {
   if (!url || url === "#") return null;
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -301,13 +303,11 @@ function ensureAbsoluteUrl(url) {
   }
   return url;
 }
-
 function clearAllData() {
   chrome.storage.local.remove("components", () => {
     document.getElementById("componentContainer").innerHTML = "";
   });
 }
-
 function exportData() {
   getComponentsFromStorage().then((components) => {
     const dataStr = JSON.stringify(components, null, 2);
@@ -320,7 +320,6 @@ function exportData() {
     document.body.removeChild(link);
   });
 }
-
 function filterComponents() {
   const searchText = document.getElementById("searchInput").value.toLowerCase();
   const components = document.querySelectorAll(".component");
@@ -331,13 +330,11 @@ function filterComponents() {
     component.style.display = title.includes(searchText) ? "" : "none";
   });
 }
-
 function saveDataToStorage(data) {
   chrome.storage.local.set({ components: data }, () => {
     console.log("Data successfully saved to storage.");
   });
 }
-
 async function getComponentsFromStorage() {
   return new Promise((resolve) => {
     chrome.storage.local.get(["components"], (result) => {
@@ -346,7 +343,6 @@ async function getComponentsFromStorage() {
     });
   });
 }
-
 function loadDataFromStorage() {
   getComponentsFromStorage().then((components) => {
     if (components) {
@@ -355,17 +351,15 @@ function loadDataFromStorage() {
     }
   });
 }
-
 function addStats(components) {
   const sitesCount = document.getElementById("sites-count");
   sitesCount.innerHTML = "Sites count: " + components.length;
   sitesCount.style.color = "white";
 }
-
 function renderComponents(components) {
   const componentContainer = document.getElementById("componentContainer");
   componentContainer.innerHTML = "";
   components.forEach((component) => {
-    componentContainer.appendChild(createComponent(component));
+    componentContainer.appendChild(createAccountComponent(component));
   });
 }

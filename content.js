@@ -1,4 +1,44 @@
-// Floating Badges
+// Global variables ----------------------------------------
+const badgeLength = "160px";
+
+// Environments
+const stageDomain = "author-colgate-stage-65";
+const prodDomain = "author-colgate-prod-65";
+const devDomain = "3.95.170.167:4502";
+
+// Flavours
+const adminIdentification = ".adobecqms.net/sites.html/content/";
+const editorIdentification = ".adobecqms.net/editor.html/content/";
+const vapIdentificator = ".adobecqms.net/content/";
+
+
+// Listener from popup.js ----------------------------------------
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "toggleBadges") {
+    const badges = document.querySelectorAll(".floating-badge");
+    let allHidden = true;
+
+    badges.forEach((badge) => {
+      if (badge.style.display === "none") {
+        badge.style.display = "block";
+      } else {
+        badge.style.display = "none";
+        allHidden = false;
+      }
+    });
+
+    if (allHidden) {
+      sendResponse({ status: "badges visible" });
+    } else {
+      sendResponse({ status: "badges hidden" });
+    }
+  }
+});
+
+
+
+// Floating Badges ----------------------------------------
 function displayQuickActions() {
   const htmlTag = document.querySelector("html");
   if (htmlTag) {
@@ -38,13 +78,13 @@ function displayEnvironmentBadge(environment) {
   }
 }
 
-// Quick actions Menu
+// Quick actions Menu   -----------------------------------
 function showQuickActionsMenu(badge) {
   const menu = document.createElement("div");
   menu.className = "quick-actions-menu";
   menu.style.position = "fixed";
   menu.style.display = "block";
-  menu.style.right = "calc(10px + " + badge.offsetWidth + "px)";
+  menu.style.right = "calc(15px + " + badge.offsetWidth + "px)";
   menu.style.width = "365px";
   menu.style.color = "black";
   menu.style.padding = "10px";
@@ -78,6 +118,7 @@ function showQuickActionsMenu(badge) {
   vapToEditorButton.style.width = "100%";
   vapToEditorButton.style.padding = "5px";
   vapToEditorButton.style.backgroundColor = "lightblue";
+  vapToEditorButton.style.fontSize = "14.4px";
   vapToEditorButton.style.border = "none";
   vapToEditorButton.style.borderRadius = "4px";
   vapToEditorButton.style.cursor = "pointer";
@@ -90,6 +131,7 @@ function showQuickActionsMenu(badge) {
   editorToAdminButton.style.marginTop = "5px";
   editorToAdminButton.style.backgroundColor = "lightgreen";
   editorToAdminButton.style.border = "none";
+  editorToAdminButton.style.fontSize = "14.4px";
   editorToAdminButton.style.borderRadius = "4px";
   editorToAdminButton.style.cursor = "pointer";
 
@@ -102,11 +144,13 @@ function showQuickActionsMenu(badge) {
   adminToEditorBtton.style.backgroundColor = "yellow";
   adminToEditorBtton.style.border = "none";
   adminToEditorBtton.style.borderRadius = "4px";
+  adminToEditorBtton.style.fontSize = "14.4px";
   adminToEditorBtton.style.cursor = "pointer";
 
   // Button for Admin to VAP
   const adminToVapButton = document.createElement("button");
   adminToVapButton.textContent = "Go to VAP";
+  adminToVapButton.style.fontSize = "14.4px";
   adminToVapButton.style.width = "100%";
   adminToVapButton.style.padding = "5px";
   adminToVapButton.style.marginTop = "5px";
@@ -126,6 +170,7 @@ function showQuickActionsMenu(badge) {
   stageProdSwapButton.style.border = "none";
   stageProdSwapButton.style.borderRadius = "4px";
   stageProdSwapButton.style.cursor = "pointer";
+  stageProdSwapButton.style.fontSize = "14.4px";
 
   // Button for Delete Cache
   const cleanCacheButton = document.createElement("button");
@@ -135,6 +180,8 @@ function showQuickActionsMenu(badge) {
   cleanCacheButton.style.marginTop = "5px";
   cleanCacheButton.style.backgroundColor = "red";
   cleanCacheButton.style.border = "none";
+  cleanCacheButton.style.fontSize = "14.4px";
+
   cleanCacheButton.style.borderRadius = "4px";
   cleanCacheButton.style.cursor = "pointer";
 
@@ -151,6 +198,8 @@ function showQuickActionsMenu(badge) {
         copiedMessage.style.maxWidth = "300px";
         copiedMessage.style.maxWidth = "fit-content";
         copiedMessage.style.minWidth = "fit-content";
+        copiedMessage.style.fontSize = "14.4px";
+
         copiedMessage.style.height = "fit-content";
         copiedMessage.style.backgroundColor = "rgba(247, 255, 49, 0.3)";
         copiedMessage.style.color = "black";
@@ -195,7 +244,6 @@ function showQuickActionsMenu(badge) {
   adminToEditorBtton.addEventListener("click", () => {
     switchEditorAdmin();
   });
-
   // The following need optimization or implementation of above logic
   vapToEditorButton.addEventListener("click", () => {
     const u = location.href.split(".net/");
@@ -204,7 +252,6 @@ function showQuickActionsMenu(badge) {
       "_blank"
     );
   });
-
   adminToVapButton.addEventListener("click", () => {
     const url = window.location.href;
     if (
@@ -258,29 +305,7 @@ function showQuickActionsMenu(badge) {
   }, 10);
 }
 
-// Helper Functions
-function makeDraggable(el) {
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  el.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    offsetX = e.clientX - el.getBoundingClientRect().left;
-    offsetY = e.clientY - el.getBoundingClientRect().top;
-    el.style.position = "fixed";
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      el.style.left = `${e.clientX - offsetX}px`;
-      el.style.top = `${e.clientY - offsetY}px`;
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
-}
+// Badge creator  ----------------------------------------
 function createFloatingBadge(
   text,
   bottomOffset = 50,
@@ -291,10 +316,10 @@ function createFloatingBadge(
   badge.style.position = "fixed";
   badge.style.bottom = bottomOffset ? bottomOffset + "px" : "50px";
   badge.style.right = "10px";
-  badge.style.maxWidth = "300px";
-  badge.style.maxWidth = "fit-content";
-  badge.style.minWidth = "fit-content";
+  badge.style.width = badgeLength;
+  badge.style.textAlign = "center";
   badge.style.height = "fit-content";
+  badge.style.fontSize = "14.4px";
   badge.style.backgroundColor = bgColor ? bgColor : red;
   badge.style.color = "black";
   badge.style.padding = "10px 15px";
@@ -325,8 +350,8 @@ function createQuickActionBadge(
   badge.style.position = "fixed";
   badge.style.bottom = bottomOffset ? bottomOffset + "px" : "50px";
   badge.style.right = "10px";
-  badge.style.maxWidth = "fit-content";
-  badge.style.minWidth = "fit-content";
+  badge.style.width = badgeLength;
+  badge.style.textAlign = "center";
   badge.style.height = "fit-content";
   badge.style.backgroundColor = bgColor ? bgColor : "red";
   badge.style.color = "black";
@@ -349,6 +374,30 @@ function createQuickActionBadge(
   // Add event listener to toggle the menu
   badge.addEventListener("click", () => {
     toggleQuickActionsMenu(badge);
+  });
+}
+
+// Helper Functions     -----------------------------------
+function makeDraggable(el) {
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  el.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - el.getBoundingClientRect().left;
+    offsetY = e.clientY - el.getBoundingClientRect().top;
+    el.style.position = "fixed";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      el.style.left = `${e.clientX - offsetX}px`;
+      el.style.top = `${e.clientY - offsetY}px`;
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
   });
 }
 function toggleQuickActionsMenu(badge) {
@@ -398,6 +447,7 @@ function switchAdminVap() {
   }
 }
 
+// Detectors  ---------------------------------------------
 function isVap(url) {
   return url.slice(-5) == ".html" && !url.includes("editor.html");
 }
@@ -407,7 +457,36 @@ function isEditor(url) {
 function isAdmin(url) {
   return url.includes("sites.html");
 }
+function getEnvironment() {
+  const currentUrl = window.location.href.toLowerCase();
 
+  let environment = "";
+
+  if (currentUrl.includes(prodDomain)) {
+    environment = "Prod";
+  } else if (currentUrl.includes(stageDomain)) {
+    environment = "Stage";
+  } else if (currentUrl.includes(devDomain)) {
+    environment = "Dev";
+  }
+  return environment;
+}
+function getFlavour() {
+  const url = window.location.href;
+  let ret = "";
+
+  if (url.includes(adminIdentification)) {
+    ret = "Admin";
+  } else if (url.includes(editorIdentification)) {
+    ret = "Editor";
+  } else if (url.includes(vapIdentificator)) {
+    ret = "Vap";
+  }
+
+  return ret;
+}
+
+// Deprecated / Beta  -----------------------------------
 function detectOverrides() {
   const elements = document.querySelectorAll("*");
   for (const element of elements) {
@@ -424,51 +503,7 @@ function detectOverrides() {
   }
 }
 
-const VAP =
-  "https://author-colgate-stage-65.adobecqms.net/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources.html?wcmmode=disabled";
-const Admin =
-  "https://author-colgate-stage-65.adobecqms.net/sites.html/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources";
-
-const Editor =
-  "https://author-colgate-stage-65.adobecqms.net/editor.html/content/cp-sites-aem/hills/hills-pet/en_us/home/pet-adoption-resources.html";
-
-function getEnvironment() {
-  const currentUrl = window.location.href.toLowerCase();
-
-  let environment = "";
-
-  if (currentUrl.includes("author-colgate-prod")) {
-    environment = "Prod";
-  } else if (currentUrl.includes("author-colgate-stage")) {
-    environment = "Stage";
-  } else if (currentUrl.includes("3.95.170.167:4502")) {
-    environment = "Dev";
-  }
-  return environment;
-}
-
-function getFlavour() {
-  const url = window.location.href;
-  let ret = "";
-
-  if (
-    url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
-  ) {
-    ret = "Admin";
-  } else if (
-    url.includes("author-colgate-stage-65.adobecqms.net/editor.html/content/")
-  ) {
-    ret = "Editor";
-  } else if (url.includes("author-colgate-stage-65.adobecqms.net/content/")) {
-    ret = "Vap";
-  } else if (url.includes("3.95.170.167:4502")) {
-    ret = "DEV";
-  }
-
-  return ret;
-}
-
-// Initialize Popup
+// Initialize Popup   -----------------------------------
 function init() {
   let environment = getEnvironment();
 
@@ -483,16 +518,3 @@ function init() {
 }
 
 init();
-
-// function to delete cache, i need to add it as a quick actions button
-// if ('caches' in window) {
-//   caches.keys().then((names) => {
-//     names.forEach((name) => {
-//       caches.delete(name);
-//     });
-//   });
-//   console.log("Site cache cleared.");
-// } else {
-//   console.log("Cache API not supported.");
-// }
-// window.location.reload(true); // Reload the page and force revalidation from the server
