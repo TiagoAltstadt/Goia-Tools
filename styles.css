@@ -68,6 +68,10 @@
     transition: transform 0.3s ease;
     background: var(--primary-color);
   }
+
+  .buttons-section{
+    display: flex;
+  }
 }
 
 #goiaToolsBody .title {
@@ -129,7 +133,8 @@
   cursor: pointer;
   margin-bottom: 10px;
   font-size: 1em;
-  background-color: #007bff;
+  background-color: transparent;
+  border: 1px solid;
   color: var(--font-white);
   transition: background-color 0.3s ease;
 }
@@ -199,8 +204,9 @@
 
 #goiaToolsBody .button-row {
   display: flex;
+  flex-direction: row;
+  color: var(--font-white);
   width: 240px;
-  flex-direction: column;
 }
 #goiaToolsBody .button-container {
   display: flex;
@@ -211,6 +217,7 @@
 #goiaToolsBody .component button {
   margin: 2px;
   padding: 5px 10px;
+  width: fit-content;
   font-size: 0.9em;
 }
 

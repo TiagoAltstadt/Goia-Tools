@@ -1,24 +1,39 @@
+const experienceFragmentsURL =
+  "https://author-colgate-stage-65.adobecqms.net/aem/experience-fragments.html";
+const assetsURL = "https://author-colgate-stage-65.adobecqms.net/assets.html/";
+
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   loadDataFromStorage();
 });
 
+document
+  .querySelector("#experienceFragmentsButton")
+  .addEventListener("click", () => {
+    window.open(experienceFragmentsURL, "_blank");
+  });
+
+document.querySelector("#assetsButton").addEventListener("click", () => {
+  window.open(assetsURL, "_blank");
+});
 // Messager for content.js ----------------------------------------
 document.querySelector("#hideBadgesButton").addEventListener("click", () => {
   const button = document.querySelector("#hideBadgesButton");
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "toggleBadges" }, (response) => {
-      if (response.status === "badges visible") {
-        button.textContent = "Hide Badges";
-      } else if (response.status === "badges hidden") {
-        button.textContent = "Show Badges";
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { action: "toggleBadges" },
+      (response) => {
+        if (response.status === "badges visible") {
+          button.textContent = "Hide Badges";
+        } else if (response.status === "badges hidden") {
+          button.textContent = "Show Badges";
+        }
       }
-    });
+    );
   });
 });
-
-
 
 // Functions
 function saveBasicUrlsToStorage(basicUrls) {
