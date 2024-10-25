@@ -129,10 +129,10 @@ function handleFileUpload(event) {
     reader.readAsText(file);
   }
 }
-function createAccountComponent(component) {
+function createAccountComponent(component, index) {
   const container = document.createElement("div");
   container.className = "component blur";
-  container.id = `component-${component.id}`;
+  container.id = `component-${index}`;
 
   container.appendChild(createTitle(component.name));
   container.appendChild(createPathSubtitle(component.path));
@@ -360,9 +360,11 @@ async function saveEdit(component, form) {
 
   const components = await loadComponentsFromStorage();
 
-  const updatedComponents = components.map((comp) =>
-    comp.id === component.id ? { ...component } : comp
-  );
+  const updatedComponents = components.map((comp) => {
+    console.log("comp.id", comp.id);
+    console.log("component.id", component.id);
+    comp.id === component.id ? { ...component } : comp;
+  });
 
   saveComponentsToStorage(updatedComponents);
 
@@ -472,8 +474,10 @@ function renderComponents() {
     if (components) {
       const componentContainer = document.getElementById("componentContainer");
       componentContainer.innerHTML = "";
-      components.forEach((component) => {
-        componentContainer.appendChild(createAccountComponent(component));
+      components.forEach((component, index) => {
+        componentContainer.appendChild(
+          createAccountComponent(component, index)
+        );
       });
     }
   });
