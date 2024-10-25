@@ -27,56 +27,62 @@ let adminFlavour = "";
 let editorFlavour = "";
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupEventListeners();
   loadBasicUrlsFromStorage().then((basicUrls) => {
     if (basicUrls) {
       // declaring global variables
       prodDomain = basicUrls.prod_domain;
-      stageDomain = basicUrls.stageDomain;
-      devDomain = basicUrls.devDomain;
+      stageDomain = basicUrls.stage_domain;
+      devDomain = basicUrls.dev_domain;
       assetsFlavour = basicUrls.assets_flavour;
       experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
       adminFlavour = basicUrls.admin_flavour;
       editorFlavour = basicUrls.editor_flavour;
+      loadDataFromStorage();
+      setupEventListeners();
+      console.log("basicUrls", basicUrls);
+      console.log("assetsFlavour", assetsFlavour);
+
+      initializeListeners();
     }
   });
-  loadDataFromStorage();
 });
 
-document
-  .querySelector("#experienceFragmentsButton")
-  .addEventListener("click", () => {
+function initializeListeners() {
+  // Messager for content.js ----------------------------------------
+  document.querySelector("#hideBadgesButton").addEventListener("click", () => {
+    const button = document.querySelector("#hideBadgesButton");
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        { action: "toggleBadges" },
+        (response) => {
+          if (response.status === "badges visible") {
+            button.textContent = "Hide Badges";
+          } else if (response.status === "badges hidden") {
+            button.textContent = "Show Badges";
+          }
+        }
+      );
+    });
+  });
+
+  document
+    .querySelector("#experienceFragmentsButton")
+    .addEventListener("click", () => {
+      window.open(
+        protocol + stageDomain + experienceFragmentsFlavour.replace(/.$/, ""),
+        "_blank"
+      );
+    });
+
+  document.querySelector("#assetsButton").addEventListener("click", () => {
     window.open(
-      protocol + stageDomain + experienceFragmentsFlavour.replace(/.$/, ""),
+      protocol + stageDomain + assetsFlavour.replace(/.$/, ""),
       "_blank"
     );
   });
-
-document.querySelector("#assetsButton").addEventListener("click", () => {
-  window.open(
-    protocol + stageDomain + assetsFlavour.replace(/.$/, ""),
-    "_blank"
-  );
-});
-
-// Messager for content.js ----------------------------------------
-document.querySelector("#hideBadgesButton").addEventListener("click", () => {
-  const button = document.querySelector("#hideBadgesButton");
-
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { action: "toggleBadges" },
-      (response) => {
-        if (response.status === "badges visible") {
-          button.textContent = "Hide Badges";
-        } else if (response.status === "badges hidden") {
-          button.textContent = "Show Badges";
-        }
-      }
-    );
-  });
-});
+}
 
 // Functions
 
