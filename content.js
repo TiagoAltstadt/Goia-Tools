@@ -1,16 +1,39 @@
+// URL should be: protocol + domain + flavour + path
+
 // Global variables ----------------------------------------
 const badgeLength = "160px";
+const protocol = "https://";
 
 // Environments
-const stageDomain = "author-colgate-stage-65";
-const prodDomain = "author-colgate-prod-65";
-const devDomain = "3.95.170.167:4502";
+let stageDomain = "";
+let prodDomain = "asd";
+let devDomain = "";
 
 // Flavours
-const adminIdentification = ".adobecqms.net/sites.html/content/";
-const editorIdentification = ".adobecqms.net/editor.html/content/";
+let assetsFlavour = "";
+let experienceFragmentsFlavour = "";
+let adminFlavour = "";
+let editorFlavour = "ed";
+
+// Identificators
 const vapIdentificator = ".adobecqms.net/content/";
 
+async function getBasicUrlsFromStorage() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["basicUrls"], (result) => {
+      let basicUrls = result.basicUrls || [];
+      // declaring global variables
+      prodDomain = basicUrls.prod_domain;
+      stageDomain = basicUrls.stageDomain;
+      devDomain = basicUrls.devDomain;
+      assetsFlavour = basicUrls.assets_flavour;
+      experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
+      adminFlavour = basicUrls.admin_flavour;
+      editorFlavour = basicUrls.editor_flavour;
+      resolve(basicUrls);
+    });
+  });
+}
 
 // Listener from popup.js ----------------------------------------
 
@@ -35,8 +58,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
   }
 });
-
-
 
 // Floating Badges ----------------------------------------
 function displayQuickActions() {
@@ -229,11 +250,11 @@ function showQuickActionsMenu(badge) {
 
   stageProdSwapButton.addEventListener("click", () => {
     var url = window.location.href;
-    if (url.includes("author-colgate-prod")) {
-      url = url.replace("author-colgate-prod", "author-colgate-stage");
+    if (url.includes(prodDomain)) {
+      url = url.replace(prodDomain, stageDomain);
       window.open(url, "_blank");
-    } else if (url.includes("author-colgate-stage")) {
-      url = url.replace("author-colgate-stage", "author-colgate-prod");
+    } else if (url.includes(stageDomain)) {
+      url = url.replace(stageDomain, prodDomain);
       window.open(url, "_blank");
     }
   });
@@ -248,21 +269,19 @@ function showQuickActionsMenu(badge) {
   vapToEditorButton.addEventListener("click", () => {
     const u = location.href.split(".net/");
     window.open(
-      u[0] + ".net/editor.html/" + u[1].split("?wcmmode=disabled")[0],
+      u[0] + ".net/" + editorFlavour + u[1].split("?wcmmode=disabled")[0],
       "_blank"
     );
   });
   adminToVapButton.addEventListener("click", () => {
     const url = window.location.href;
-    if (
-      url.includes("author-colgate-stage-65.adobecqms.net/sites.html/content/")
-    ) {
+    if (url.includes(stageDomain + adminFlavour)) {
       // Delete extra stuff
       if (url.includes("?wcmmode=disabled")) {
         url.replace("?wcmmode=disabled", "");
       }
 
-      const newUrl = url.replace("sites.html/", "") + ".html";
+      const newUrl = url.replace(adminFlavour, "") + ".html";
       window.open(newUrl, "_blank");
     } else {
       alert(
@@ -423,13 +442,13 @@ function switchEditorAdmin() {
   var url = window.location.href;
 
   // Editor -> Admin
-  if (url.includes("editor.html")) {
-    url = url.replace("editor.html", "sites.html").slice(0, -5);
+  if (url.includes(editorFlavour)) {
+    url = url.replace(editorFlavour, adminFlavour).slice(0, -5);
     window.open(url, "_blank");
   }
   // Admin -> Editor
-  else if (url.includes("sites.html")) {
-    url = url.replace("sites.html", "editor.html") + ".html";
+  else if (url.includes(adminFlavour)) {
+    url = url.replace(adminFlavour, editorFlavour) + ".html";
     window.open(url, "_blank");
   } else {
     alert("This is not Editor nor Admin");
@@ -439,7 +458,7 @@ function switchAdminVap() {
   var url = window.location.href;
   // Admin -> VAP
   if (isAdmin(url)) {
-    url = url.replace("sites.html", "").slice(0, -5);
+    url = url.replace(adminFlavour, "").slice(0, -5);
     window.open(url, "_blank");
   }
   // VAP -> Admin
@@ -449,13 +468,13 @@ function switchAdminVap() {
 
 // Detectors  ---------------------------------------------
 function isVap(url) {
-  return url.slice(-5) == ".html" && !url.includes("editor.html");
+  return url.slice(-5) == ".html" && !url.includes(editorFlavour);
 }
 function isEditor(url) {
-  return url.includes("editor.html") && url.slice(0, -5) == ".html";
+  return url.includes(editorFlavour) && url.slice(0, -5) == ".html";
 }
 function isAdmin(url) {
-  return url.includes("sites.html");
+  return url.includes(adminFlavour);
 }
 function getEnvironment() {
   const currentUrl = window.location.href.toLowerCase();
@@ -475,11 +494,15 @@ function getFlavour() {
   const url = window.location.href;
   let ret = "";
 
-  if (url.includes(adminIdentification)) {
+  if (url.includes(adminFlavour)) {
     ret = "Admin";
-  } else if (url.includes(editorIdentification)) {
+  } else if (url.includes(editorFlavour)) {
     ret = "Editor";
-  } else if (url.includes(vapIdentificator)) {
+  } else if (url.includes(assetsFlavour)) {
+    ret = "Assets";
+  } else if (url.includes(experienceFragmentsFlavour)) {
+    ret = "Experience Fragments";
+  } else {
     ret = "Vap";
   }
 
@@ -506,6 +529,8 @@ function detectOverrides() {
 // Initialize Popup   -----------------------------------
 function init() {
   let environment = getEnvironment();
+
+  getBasicUrlsFromStorage();
 
   getFlavour();
 

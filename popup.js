@@ -1,21 +1,64 @@
-const experienceFragmentsURL =
-  "https://author-colgate-stage-65.adobecqms.net/aem/experience-fragments.html";
-const assetsURL = "https://author-colgate-stage-65.adobecqms.net/assets.html/";
+// Example
+// {
+//   "name": "Hills Pet Nutrition",
+//   "path": "/etc/designs/zg/cphills/desktop",
+//   "aem_path": "content/cp-sites/hills/hills-pet/en_us/home",
+//   "bitbucket": "bitbucket.colgate.com/projects/THM/repos/hills-theme/browse",
+//   "live": "www.hillspet.com/",
+//   "jenkins": "jenkins.colgate.com/job/colpal65-theme-hills-pet-live-deploy/",
+//   "stageAEM": "stageaem.hillspet.com/",
+//   "id": 10
+// }
+
+// URL should be: protocol + domain + flavour + path
+
+// Global Variables
+const protocol = "https://";
+
+// Environments
+let stageDomain = "";
+let prodDomain = "";
+let devDomain = "";
+
+// Flavours
+let assetsFlavour = "";
+let experienceFragmentsFlavour = "";
+let adminFlavour = "";
+let editorFlavour = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
+  loadBasicUrlsFromStorage().then((basicUrls) => {
+    if (basicUrls) {
+      // declaring global variables
+      prodDomain = basicUrls.prod_domain;
+      stageDomain = basicUrls.stageDomain;
+      devDomain = basicUrls.devDomain;
+      assetsFlavour = basicUrls.assets_flavour;
+      experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
+      adminFlavour = basicUrls.admin_flavour;
+      editorFlavour = basicUrls.editor_flavour;
+    }
+  });
   loadDataFromStorage();
 });
 
 document
   .querySelector("#experienceFragmentsButton")
   .addEventListener("click", () => {
-    window.open(experienceFragmentsURL, "_blank");
+    window.open(
+      protocol + stageDomain + experienceFragmentsFlavour.replace(/.$/, ""),
+      "_blank"
+    );
   });
 
 document.querySelector("#assetsButton").addEventListener("click", () => {
-  window.open(assetsURL, "_blank");
+  window.open(
+    protocol + stageDomain + assetsFlavour.replace(/.$/, ""),
+    "_blank"
+  );
 });
+
 // Messager for content.js ----------------------------------------
 document.querySelector("#hideBadgesButton").addEventListener("click", () => {
   const button = document.querySelector("#hideBadgesButton");
@@ -36,11 +79,7 @@ document.querySelector("#hideBadgesButton").addEventListener("click", () => {
 });
 
 // Functions
-function saveBasicUrlsToStorage(basicUrls) {
-  chrome.storage.local.set({ basicUrls }, () => {
-    console.log("Basic URLs successfully saved to storage.");
-  });
-}
+
 function setupEventListeners() {
   document.getElementById("clearData").addEventListener("click", clearAllData);
   document
@@ -64,9 +103,10 @@ function handleFileUpload(event) {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result);
-        if (Array.isArray(data.urls) && Array.isArray(data.urls[0])) {
-          saveDataToStorage(data.urls[0]);
-          renderComponents(data.urls[0]);
+        if (Array.isArray(data.urls) && Array.isArray(data.urls)) {
+          saveComponentsToStorage(data.urls);
+          saveBasicUrlsToStorage(data.basicUrls);
+          renderComponents();
         } else {
           alert("Invalid file format.");
         }
@@ -76,9 +116,9 @@ function handleFileUpload(event) {
           alert("No basic URLs found in the JSON file.");
         }
       } catch (e) {
-        console.error("Error parsing JSON file:", e);
-        alert("Error reading file.");
+        alert("Error reading file." + e);
       }
+      addStats();
     };
     reader.readAsText(file);
   }
@@ -89,7 +129,7 @@ function createAccountComponent(component) {
   container.id = `component-${component.id}`;
 
   container.appendChild(createTitle(component.name));
-  container.appendChild(createPathSubtitle(component.Path));
+  container.appendChild(createPathSubtitle(component.path));
   container.appendChild(createButtonContainer(component));
   container.appendChild(createEditButton(component, container));
 
@@ -114,20 +154,36 @@ function createButtonContainer(component) {
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
   buttonContainer.style.display = "none";
-
   const buttonGroups = {
-    Live: [{ id: "Live", url: component.Live }],
+    Live: [{ id: "Live", url: component.live }],
+    Admin: [
+      { id: "Prod", url: prodDomain + adminFlavour + component.aem_path },
+      { id: "Stage", url: stageDomain + adminFlavour + component.aem_path },
+    ],
     Editor: [
-      { id: "Prod", url: component.AEM_Prod },
-      { id: "Stage", url: component.AEM_Stage },
+      {
+        id: "Prod",
+        url: prodDomain + editorFlavour + component.aem_path + ".html",
+      },
+      {
+        id: "Stage",
+        url: stageDomain + editorFlavour + component.aem_path + ".html",
+      },
     ],
     VAP: [
-      { id: "Prod", url: component.VAP_Prod },
-      { id: "Stage", url: component.VAP_Stage },
+      {
+        id: "Prod",
+        url: prodDomain + component.aem_path + ".html?wcmmode=disabled",
+      },
+      {
+        id: "Stage",
+        url: stageDomain + component.aem_path + ".html?wcmmode=disabled",
+      },
     ],
-    "Bitbucket & Jenkins": [
-      { id: "Bitbucket", url: component.Bitbucket },
-      { id: "Jenkins", url: component.Jenkins },
+    Other: [
+      { id: "Stageaem", url: component.stageAem },
+      { id: "Bitbucket", url: component.bitbucket },
+      { id: "Jenkins", url: component.jenkins },
     ],
   };
 
@@ -141,7 +197,14 @@ function createButtonContainer(component) {
 function createButtonRow(group, groupButtons) {
   const row = document.createElement("div");
   row.className = "button-row";
-  row.textContent = `${group}: `;
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = `${group}: `;
+  row.appendChild(label);
+
+  const buttonHolder = document.createElement("div");
+  buttonHolder.className = "button-holder";
 
   groupButtons.forEach((btn) => {
     const button = document.createElement("button");
@@ -155,20 +218,25 @@ function createButtonRow(group, groupButtons) {
       button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), "_blank");
     }
 
-    row.appendChild(button);
+    buttonHolder.appendChild(button);
+    row.appendChild(buttonHolder);
   });
 
   return row;
 }
 function createEditButton(component, container) {
+  const div = document.createElement("div");
+  div.className = "edit-button-container";
+
   const editButton = document.createElement("button");
-  editButton.className = "edit-button";
+  editButton.id = "edit-button";
   editButton.textContent = "Edit";
   editButton.onclick = () => {
     toggleEditButton();
     openEditForm(component, container);
   };
-  return editButton;
+  div.appendChild(editButton);
+  return div;
 }
 
 // Helper Functions
@@ -181,7 +249,7 @@ function toggleQuickActions(titleElement) {
   }
 }
 function toggleEditButton() {
-  const editButtons = document.querySelectorAll(".edit-button");
+  const editButtons = document.querySelectorAll("#edit-button");
   editButtons.forEach((editButton) => {
     editButton.style.display =
       editButton.style.display === "none" ? "block" : "none";
@@ -202,27 +270,12 @@ function createEditForm(component) {
 
   const fields = [
     { label: "Name", value: component.name, placeholder: "Name" },
-    { label: "Path", value: component.Path, placeholder: "Path" },
-    { label: "Live URL", value: component.Live, placeholder: "Live URL" },
+    { label: "Path", value: component.path, placeholder: "Path" },
+    { label: "Live URL", value: component.live, placeholder: "Live URL" },
     {
-      label: "Editor URL (Prod)",
-      value: component.AEM_Prod,
-      placeholder: "Editor URL (Prod)",
-    },
-    {
-      label: "Editor URL (Stage)",
-      value: component.AEM_Stage,
-      placeholder: "Editor URL (Stage)",
-    },
-    {
-      label: "VAP URL (Prod)",
-      value: component.VAP_Prod,
-      placeholder: "VAP URL (Prod)",
-    },
-    {
-      label: "VAP URL (Stage)",
-      value: component.VAP_Stage,
-      placeholder: "VAP URL (Stage)",
+      label: "AEM path",
+      value: component.aem_path,
+      placeholder: "AEM path",
     },
     {
       label: "Bitbucket URL",
@@ -277,32 +330,23 @@ function createFormButtons(component, form) {
 async function saveEdit(component, form) {
   updateComponentData(component, form);
 
-  const components = await getComponentsFromStorage();
+  const components = await loadComponentsFromStorage();
 
   const updatedComponents = components.map((comp) =>
     comp.id === component.id ? { ...component } : comp
   );
 
-  saveDataToStorage(updatedComponents);
+  saveComponentsToStorage(updatedComponents);
 
   form.remove();
-  renderComponents(updatedComponents);
+  renderComponents();
 }
 function updateComponentData(component, form) {
   component.name = form.querySelector("input[placeholder='Name']").value;
-  component.Path = form.querySelector("input[placeholder='Path']").value;
-  component.Live = form.querySelector("input[placeholder='Live URL']").value;
-  component.AEM_Prod = form.querySelector(
-    "input[placeholder='Editor URL (Prod)']"
-  ).value;
-  component.AEM_Stage = form.querySelector(
-    "input[placeholder='Editor URL (Stage)']"
-  ).value;
-  component.VAP_Prod = form.querySelector(
-    "input[placeholder='VAP URL (Prod)']"
-  ).value;
-  component.VAP_Stage = form.querySelector(
-    "input[placeholder='VAP URL (Stage)']"
+  component.path = form.querySelector("input[placeholder='Path']").value;
+  component.live = form.querySelector("input[placeholder='Live URL']").value;
+  component.aem_path = form.querySelector(
+    "input[placeholder='AEM path']"
   ).value;
   component.Bitbucket = form.querySelector(
     "input[placeholder='Bitbucket URL']"
@@ -324,7 +368,7 @@ function clearAllData() {
   });
 }
 function exportData() {
-  getComponentsFromStorage().then((components) => {
+  loadComponentsFromStorage().then((components) => {
     const dataStr = JSON.stringify(components, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const link = document.createElement("a");
@@ -345,36 +389,64 @@ function filterComponents() {
     component.style.display = title.includes(searchText) ? "" : "none";
   });
 }
-function saveDataToStorage(data) {
+function loadDataFromStorage() {
+  renderComponents();
+  addStats();
+}
+// Saving Data
+function saveComponentsToStorage(data) {
   chrome.storage.local.set({ components: data }, () => {
     console.log("Data successfully saved to storage.");
   });
 }
-async function getComponentsFromStorage() {
+function saveBasicUrlsToStorage(basicUrls) {
+  chrome.storage.local.set({ basicUrls }, () => {
+    console.log("Basic URLs successfully saved to storage.");
+  });
+  prodDomain = basicUrls.prod_domain;
+  stageDomain = basicUrls.stageDomain;
+  devDomain = basicUrls.devDomain;
+  assetsFlavour = basicUrls.assets_flavour;
+  experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
+  adminFlavour = basicUrls.admin_flavour;
+  editorFlavour = basicUrls.editor_flavour;
+}
+// Loading Data
+async function loadComponentsFromStorage() {
   return new Promise((resolve) => {
     chrome.storage.local.get(["components"], (result) => {
-      const components = result.components || [];
+      let components = result.components || [];
       resolve(components);
     });
   });
 }
-function loadDataFromStorage() {
-  getComponentsFromStorage().then((components) => {
+async function loadBasicUrlsFromStorage() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["basicUrls"], (result) => {
+      let basicUrls = result.basicUrls || [];
+
+      resolve(basicUrls);
+    });
+  });
+}
+
+function addStats() {
+  loadComponentsFromStorage().then((components) => {
     if (components) {
-      addStats(components);
-      renderComponents(components);
+      const sitesCount = document.getElementById("sites-count");
+      sitesCount.innerHTML = "Sites count: " + components.length;
+      sitesCount.style.color = "white";
     }
   });
 }
-function addStats(components) {
-  const sitesCount = document.getElementById("sites-count");
-  sitesCount.innerHTML = "Sites count: " + components.length;
-  sitesCount.style.color = "white";
-}
-function renderComponents(components) {
-  const componentContainer = document.getElementById("componentContainer");
-  componentContainer.innerHTML = "";
-  components.forEach((component) => {
-    componentContainer.appendChild(createAccountComponent(component));
+function renderComponents() {
+  loadComponentsFromStorage().then((components) => {
+    if (components) {
+      const componentContainer = document.getElementById("componentContainer");
+      componentContainer.innerHTML = "";
+      components.forEach((component) => {
+        componentContainer.appendChild(createAccountComponent(component));
+      });
+    }
   });
 }
