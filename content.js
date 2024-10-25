@@ -538,23 +538,6 @@ function getFlavour() {
   return ret;
 }
 
-// Deprecated / Beta  -----------------------------------
-function detectOverrides() {
-  const elements = document.querySelectorAll("*");
-  for (const element of elements) {
-    const computedStyle = window.getComputedStyle(element);
-    for (const property of computedStyle) {
-      const priority = computedStyle.getPropertyPriority(property);
-      if (priority === "important") {
-        console.log("Override detected:", element, property);
-        // Add a badge or highlight the element here
-      } else {
-        console.log("No Override detected");
-      }
-    }
-  }
-}
-
 // Initialize Popup   -----------------------------------
 async function init() {
   await getBasicUrlsFromStorage();

@@ -39,8 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       editorFlavour = basicUrls.editor_flavour;
       loadDataFromStorage();
       setupEventListeners();
-      console.log("basicUrls", basicUrls);
-      console.log("assetsFlavour", assetsFlavour);
 
       initializeListeners();
     }
@@ -307,12 +305,12 @@ function createEditForm(component) {
     },
     {
       label: "Bitbucket URL",
-      value: component.Bitbucket,
+      value: component.bitbucket,
       placeholder: "Bitbucket URL",
     },
     {
       label: "Jenkins URL",
-      value: component.Jenkins,
+      value: component.jenkins,
       placeholder: "Jenkins URL",
     },
   ];
@@ -361,10 +359,12 @@ async function saveEdit(component, form) {
   const components = await loadComponentsFromStorage();
 
   const updatedComponents = components.map((comp) => {
-    console.log("comp.id", comp.id);
-    console.log("component.id", component.id);
-    comp.id === component.id ? { ...component } : comp;
+    if (comp.id === component.id) {
+      Object.assign(comp, component); // Copy all properties from `component` to `comp`
+    }
+    return comp; // Ensure `comp` is returned from `map`
   });
+
 
   saveComponentsToStorage(updatedComponents);
 
@@ -378,10 +378,10 @@ function updateComponentData(component, form) {
   component.aem_path = form.querySelector(
     "input[placeholder='AEM path']"
   ).value;
-  component.Bitbucket = form.querySelector(
+  component.bitbucket = form.querySelector(
     "input[placeholder='Bitbucket URL']"
   ).value;
-  component.Jenkins = form.querySelector(
+  component.jenkins = form.querySelector(
     "input[placeholder='Jenkins URL']"
   ).value;
 }
@@ -425,8 +425,17 @@ function loadDataFromStorage() {
 }
 // Saving Data
 function saveComponentsToStorage(data) {
-  chrome.storage.local.set({ components: data }, () => {
-    console.log("Data successfully saved to storage.");
+  // Add an index to each element in the array
+  const indexedData = data.map((element, index) => {
+    return {
+      ...element,
+      id: index + 1 // or use `index` if you want to start from 0
+    };
+  });
+
+  // Save the modified data to Chrome storage
+  chrome.storage.local.set({ components: indexedData }, () => {
+    console.log("Data with indexes successfully saved to storage.");
   });
 }
 function saveBasicUrlsToStorage(basicUrls) {
