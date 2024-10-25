@@ -508,7 +508,6 @@ function isAdmin(url) {
 }
 function getEnvironment() {
   const currentUrl = window.location.href.toLowerCase();
-
   let environment = "";
 
   if (currentUrl.includes(prodDomain)) {
@@ -557,13 +556,12 @@ function detectOverrides() {
 }
 
 // Initialize Popup   -----------------------------------
-function init() {
-  let environment = getEnvironment();
-
-  getBasicUrlsFromStorage();
+async function init() {
+  await getBasicUrlsFromStorage();
 
   getFlavour();
 
+  let environment = getEnvironment();
   if (environment) {
     displayEnvironmentBadge(environment);
     displayQuickActions();
