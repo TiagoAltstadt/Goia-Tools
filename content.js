@@ -156,6 +156,18 @@ function showQuickActionsMenu(badge) {
   editorToAdminButton.style.borderRadius = "4px";
   editorToAdminButton.style.cursor = "pointer";
 
+  // Button for Editor to VAP
+  const editorToVapButton = document.createElement("button");
+  editorToVapButton.textContent = "Go to VAP";
+  editorToVapButton.style.fontSize = "14.4px";
+  editorToVapButton.style.width = "100%";
+  editorToVapButton.style.padding = "5px";
+  editorToVapButton.style.marginTop = "5px";
+  editorToVapButton.style.backgroundColor = "orange";
+  editorToVapButton.style.border = "none";
+  editorToVapButton.style.borderRadius = "4px";
+  editorToVapButton.style.cursor = "pointer";
+
   // Button for View in Admin
   const adminToEditorBtton = document.createElement("button");
   adminToEditorBtton.textContent = "Go to Editor";
@@ -183,7 +195,7 @@ function showQuickActionsMenu(badge) {
   // Button for Stage <-> Prod swap
   const stageProdSwapButton = document.createElement("button");
   stageProdSwapButton.textContent =
-    getEnvironment() == "Prod" ? "Go to Stage" : "Go to Prod";
+    getEnvironment() == "Prod" ? "Swp to Stage" : "Swap to Prod";
   stageProdSwapButton.style.width = "100%";
   stageProdSwapButton.style.padding = "5px";
   stageProdSwapButton.style.marginTop = "5px";
@@ -289,6 +301,23 @@ function showQuickActionsMenu(badge) {
       );
     }
   });
+  editorToVapButton.addEventListener("click", () => {
+    let url = window.location.href;
+    if (url.includes(editorFlavour)) {
+      // Delete extra stuff
+      url = url.replace(editorFlavour, "");
+      if (url.includes("?wcmmode=disabled")) {
+        url = url.replace("?wcmmode=disabled", "");
+      }
+
+      const newUrl = url.replace(adminFlavour, "") + ".html";
+      window.open(newUrl, "_blank");
+    } else {
+      alert(
+        "You seem not to be on an admin page, or you have not clicked the page you want to go to."
+      );
+    }
+  });
   cleanCacheButton.addEventListener("click", () => {
     if ("caches" in window) {
       caches.keys().then((names) => {
@@ -306,6 +335,7 @@ function showQuickActionsMenu(badge) {
 
   if (getFlavour() == "Editor") {
     menu.appendChild(editorToAdminButton);
+    menu.appendChild(editorToVapButton);
   }
   if (getFlavour() == "Vap") {
     menu.appendChild(vapToEditorButton);

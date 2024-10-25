@@ -163,33 +163,46 @@ function createButtonContainer(component) {
   const buttonGroups = {
     Live: [{ id: "Live", url: component.live }],
     Admin: [
-      { id: "Prod", url: prodDomain + adminFlavour + component.aem_path },
-      { id: "Stage", url: stageDomain + adminFlavour + component.aem_path },
+      {
+        id: "Prod",
+        url: protocol + prodDomain + adminFlavour + component.aem_path,
+      },
+      {
+        id: "Stage",
+        url: protocol + stageDomain + adminFlavour + component.aem_path,
+      },
     ],
     Editor: [
       {
         id: "Prod",
-        url: prodDomain + editorFlavour + component.aem_path + ".html",
+        url:
+          protocol + prodDomain + editorFlavour + component.aem_path + ".html",
       },
       {
         id: "Stage",
-        url: stageDomain + editorFlavour + component.aem_path + ".html",
+        url:
+          protocol + stageDomain + editorFlavour + component.aem_path + ".html",
       },
     ],
     VAP: [
       {
         id: "Prod",
-        url: prodDomain + component.aem_path + ".html?wcmmode=disabled",
+        url:
+          protocol + prodDomain + component.aem_path + ".html?wcmmode=disabled",
       },
       {
         id: "Stage",
-        url: stageDomain + component.aem_path + ".html?wcmmode=disabled",
+        url:
+          protocol +
+          stageDomain +
+          component.aem_path +
+          ".html?wcmmode=disabled",
       },
     ],
     Other: [
-      { id: "Stageaem", url: component.stageAem },
-      { id: "Bitbucket", url: component.bitbucket },
-      { id: "Jenkins", url: component.jenkins },
+      { id: "Stageaem", url: protocol + component.stageAem },
+      { id: "Bitbucket", url: protocol + component.bitbucket },
+      { id: "Jenkins", url: protocol + component.jenkins },
     ],
   };
 
@@ -217,11 +230,20 @@ function createButtonRow(group, groupButtons) {
     button.textContent = btn.id;
 
     // Check if the URL is missing or invalid
-    if (!btn.url || btn.url === "#" || !ensureAbsoluteUrl(btn.url)) {
+    if (
+      !btn.url ||
+      btn.url === "#" ||
+      btn.url.includes("-65.adobecqms.net/#") ||
+      btn.url.includes(".html/#") ||
+      btn.url.includes("https://#") ||
+      !ensureAbsoluteUrl(btn.url)
+    ) {
       button.disabled = true;
       button.style.backgroundColor = "gray";
     } else {
-      button.onclick = () => window.open(ensureAbsoluteUrl(btn.url), "_blank");
+      button.onclick = () => {
+        window.open(ensureAbsoluteUrl(btn.url), "_blank");
+      };
     }
 
     buttonHolder.appendChild(button);
