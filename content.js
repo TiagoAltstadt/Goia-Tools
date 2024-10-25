@@ -6,7 +6,7 @@ const protocol = "https://";
 
 // Environments
 let stageDomain = "";
-let prodDomain = "asd";
+let prodDomain = "";
 let devDomain = "";
 
 // Flavours
@@ -24,8 +24,8 @@ async function getBasicUrlsFromStorage() {
       let basicUrls = result.basicUrls || [];
       // declaring global variables
       prodDomain = basicUrls.prod_domain;
-      stageDomain = basicUrls.stageDomain;
-      devDomain = basicUrls.devDomain;
+      stageDomain = basicUrls.stage_domain;
+      devDomain = basicUrls.dev_domain;
       assetsFlavour = basicUrls.assets_flavour;
       experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
       adminFlavour = basicUrls.admin_flavour;
