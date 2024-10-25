@@ -399,7 +399,10 @@ function clearAllData() {
 }
 function exportData() {
   loadComponentsFromStorage().then((components) => {
-    const dataStr = JSON.stringify(components, null, 2);
+    // Create a new array of components without the `id` property
+    const componentsWithoutId = components.map(({ id, ...rest }) => rest);
+
+    const dataStr = JSON.stringify(componentsWithoutId, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
