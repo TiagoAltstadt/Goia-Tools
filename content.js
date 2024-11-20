@@ -13,7 +13,7 @@ let legacy_dev_domain = "";
 let legacy_assets_flavour = "";
 let legacy_experience_fragments_flavour = "";
 let legacy_admin_flavour = "";
-let legacy_editor_flavour = "ed";
+let legacy_editor_flavour = "";
 
 // Identificators
 const vapIdentificator = ".adobecqms.net/content/";
@@ -36,7 +36,8 @@ async function getBasicUrlsFromStorage() {
       legacy_stage_domain = basicUrls.legacy_stage_domain;
       legacy_dev_domain = basicUrls.legacy_dev_domain;
       legacy_assets_flavour = basicUrls.legacy_assets_flavour;
-      legacy_experience_fragments_flavour = basicUrls.legacy_experience_fragments_flavour;
+      legacy_experience_fragments_flavour =
+        basicUrls.legacy_experience_fragments_flavour;
       legacy_admin_flavour = basicUrls.legacy_admin_flavour;
       legacy_editor_flavour = basicUrls.legacy_editor_flavour;
       resolve(basicUrls);
@@ -318,7 +319,10 @@ function showQuickActionsMenu(badge) {
   vapToEditorButton.addEventListener("click", () => {
     const u = location.href.split(".net/");
     window.open(
-      u[0] + ".net/" + legacy_editor_flavour + u[1].split("?wcmmode=disabled")[0],
+      u[0] +
+        ".net/" +
+        legacy_editor_flavour +
+        u[1].split("?wcmmode=disabled")[0],
       "_blank"
     );
   });

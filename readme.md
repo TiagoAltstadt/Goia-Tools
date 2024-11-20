@@ -1,29 +1,34 @@
 # ⚡ Goia Tools ⚡
 
 Extension de Chrome para facilitar el workflow de los devs de colgate-palmolive
+_Pedir data.json a Tiago Altstadt_
 
 ## Que Hago?
 
-Accesos directos a las cuentas:
+### Accesos directos de las cuentas:
 - Prod: Admin. Editor y Vap
 - Stage: Admin. Editor y Vap
 - Jenkins
 - Bitbucket
 
-Botones de accion rapida para cambio de entorno
+### Botones de accion rapida para cambio de entorno
 - VAP a Editor (Ida y vuelta)
 - Editor a Admin (Ida y vuelta)
 - Admin a VAP (Ida y vuelta)
 
-Boton de Borrar cache 
+### Fast Pass:
+- Entrono AEM Cloud
+- Entorno Legacy
 
-Identificador de entorno
+### Funcion para Borrar cache 
 
-Identificador de local
+### Identificador de entorno
 
-Contador de sitios
+### Identificador de locale
 
-Facil importacion/exportacion de datos
+### Contador de sitios
+
+### Facil importacion/exportacion de datos
 
 
 ## Como me instalo?
