@@ -5,15 +5,15 @@ const badgeLength = "160px";
 const protocol = "https://";
 
 // Environments
-let stageDomain = "";
-let prodDomain = "";
-let devDomain = "";
+let legacy_stage_domain = "";
+let legacy_prod_domain = "";
+let legacy_dev_domain = "";
 
 // Flavours
-let assetsFlavour = "";
-let experienceFragmentsFlavour = "";
-let adminFlavour = "";
-let editorFlavour = "ed";
+let legacy_assets_flavour = "";
+let legacy_experience_fragments_flavour = "";
+let legacy_admin_flavour = "";
+let legacy_editor_flavour = "ed";
 
 // Identificators
 const vapIdentificator = ".adobecqms.net/content/";
@@ -23,13 +23,22 @@ async function getBasicUrlsFromStorage() {
     chrome.storage.local.get(["basicUrls"], (result) => {
       let basicUrls = result.basicUrls || [];
       // declaring global variables
-      prodDomain = basicUrls.prod_domain;
-      stageDomain = basicUrls.stage_domain;
-      devDomain = basicUrls.dev_domain;
-      assetsFlavour = basicUrls.assets_flavour;
-      experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
-      adminFlavour = basicUrls.admin_flavour;
-      editorFlavour = basicUrls.editor_flavour;
+
+      // Cloud URL's
+      aem_cloud_main = basicUrls.aem_cloud_main;
+      aem_cloud_target = basicUrls.aem_cloud_target;
+      aem_cloud_base = basicUrls.aem_cloud_base;
+      aem_cloud_dev = basicUrls.aem_cloud_dev;
+      aem_cloud_stage = basicUrls.aem_cloud_stage;
+      aem_cloud_prod = basicUrls.aem_cloud_prod;
+
+      legacy_prod_domain = basicUrls.legacy_prod_domain;
+      legacy_stage_domain = basicUrls.legacy_stage_domain;
+      legacy_dev_domain = basicUrls.legacy_dev_domain;
+      legacy_assets_flavour = basicUrls.legacy_assets_flavour;
+      legacy_experience_fragments_flavour = basicUrls.legacy_experience_fragments_flavour;
+      legacy_admin_flavour = basicUrls.legacy_admin_flavour;
+      legacy_editor_flavour = basicUrls.legacy_editor_flavour;
       resolve(basicUrls);
     });
   });
@@ -90,7 +99,35 @@ function displayEnvironmentBadge(environment) {
       "rgba(73, 132, 255, 0.3)"
     );
   }
-  if (environment == "Prod") {
+  if (environment == "Cloud Dev") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgb(73 89 255 / 30%)"
+    );
+  }
+  if (environment == "Cloud Stage") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgb(73 89 255 / 30%)"
+    );
+  }
+  if (environment == "Cloud Prod") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgba(255, 73, 73, 0.3)"
+    );
+  }
+  if (environment == "Cloud Main") {
+    createFloatingBadge(
+      `Environment: ${environment}`,
+      50,
+      "rgba(255, 73, 73, 0.3)"
+    );
+  }
+  if (environment == "Cloud Target") {
     createFloatingBadge(
       `Environment: ${environment}`,
       50,
@@ -262,11 +299,11 @@ function showQuickActionsMenu(badge) {
 
   stageProdSwapButton.addEventListener("click", () => {
     var url = window.location.href;
-    if (url.includes(prodDomain)) {
-      url = url.replace(prodDomain, stageDomain);
+    if (url.includes(legacy_prod_domain)) {
+      url = url.replace(legacy_prod_domain, legacy_stage_domain);
       window.open(url, "_blank");
-    } else if (url.includes(stageDomain)) {
-      url = url.replace(stageDomain, prodDomain);
+    } else if (url.includes(legacy_stage_domain)) {
+      url = url.replace(legacy_stage_domain, legacy_prod_domain);
       window.open(url, "_blank");
     }
   });
@@ -281,19 +318,19 @@ function showQuickActionsMenu(badge) {
   vapToEditorButton.addEventListener("click", () => {
     const u = location.href.split(".net/");
     window.open(
-      u[0] + ".net/" + editorFlavour + u[1].split("?wcmmode=disabled")[0],
+      u[0] + ".net/" + legacy_editor_flavour + u[1].split("?wcmmode=disabled")[0],
       "_blank"
     );
   });
   adminToVapButton.addEventListener("click", () => {
     const url = window.location.href;
-    if (url.includes(stageDomain + adminFlavour)) {
+    if (url.includes(legacy_stage_domain + legacy_admin_flavour)) {
       // Delete extra stuff
       if (url.includes("?wcmmode=disabled")) {
         url.replace("?wcmmode=disabled", "");
       }
 
-      const newUrl = url.replace(adminFlavour, "") + ".html";
+      const newUrl = url.replace(legacy_admin_flavour, "") + ".html";
       window.open(newUrl, "_blank");
     } else {
       alert(
@@ -303,14 +340,14 @@ function showQuickActionsMenu(badge) {
   });
   editorToVapButton.addEventListener("click", () => {
     let url = window.location.href;
-    if (url.includes(editorFlavour)) {
+    if (url.includes(legacy_editor_flavour)) {
       // Delete extra stuff
-      url = url.replace(editorFlavour, "");
+      url = url.replace(legacy_editor_flavour, "");
       if (url.includes("?wcmmode=disabled")) {
         url = url.replace("?wcmmode=disabled", "");
       }
 
-      const newUrl = url.replace(adminFlavour, "") + ".html";
+      const newUrl = url.replace(legacy_admin_flavour, "") + ".html";
       window.open(newUrl, "_blank");
     } else {
       alert(
@@ -472,13 +509,13 @@ function switchEditorAdmin() {
   var url = window.location.href;
 
   // Editor -> Admin
-  if (url.includes(editorFlavour)) {
-    url = url.replace(editorFlavour, adminFlavour).slice(0, -5);
+  if (url.includes(legacy_editor_flavour)) {
+    url = url.replace(legacy_editor_flavour, legacy_admin_flavour).slice(0, -5);
     window.open(url, "_blank");
   }
   // Admin -> Editor
-  else if (url.includes(adminFlavour)) {
-    url = url.replace(adminFlavour, editorFlavour) + ".html";
+  else if (url.includes(legacy_admin_flavour)) {
+    url = url.replace(legacy_admin_flavour, legacy_editor_flavour) + ".html";
     window.open(url, "_blank");
   } else {
     alert("This is not Editor nor Admin");
@@ -488,7 +525,7 @@ function switchAdminVap() {
   var url = window.location.href;
   // Admin -> VAP
   if (isAdmin(url)) {
-    url = url.replace(adminFlavour, "").slice(0, -5);
+    url = url.replace(legacy_admin_flavour, "").slice(0, -5);
     window.open(url, "_blank");
   }
   // VAP -> Admin
@@ -498,24 +535,34 @@ function switchAdminVap() {
 
 // Detectors  ---------------------------------------------
 function isVap(url) {
-  return url.slice(-5) == ".html" && !url.includes(editorFlavour);
+  return url.slice(-5) == ".html" && !url.includes(legacy_editor_flavour);
 }
 function isEditor(url) {
-  return url.includes(editorFlavour) && url.slice(0, -5) == ".html";
+  return url.includes(legacy_editor_flavour) && url.slice(0, -5) == ".html";
 }
 function isAdmin(url) {
-  return url.includes(adminFlavour);
+  return url.includes(legacy_admin_flavour);
 }
 function getEnvironment() {
   const currentUrl = window.location.href.toLowerCase();
   let environment = "";
 
-  if (currentUrl.includes(prodDomain)) {
+  if (currentUrl.includes(legacy_prod_domain)) {
     environment = "Prod";
-  } else if (currentUrl.includes(stageDomain)) {
+  } else if (currentUrl.includes(legacy_stage_domain)) {
     environment = "Stage";
-  } else if (currentUrl.includes(devDomain)) {
+  } else if (currentUrl.includes(legacy_dev_domain)) {
     environment = "Dev";
+  } else if (currentUrl.includes(aem_cloud_main)) {
+    environment = "Cloud Main";
+  } else if (currentUrl.includes(aem_cloud_target)) {
+    environment = "Cloud Target";
+  } else if (currentUrl.includes(aem_cloud_dev)) {
+    environment = "Cloud Dev";
+  } else if (currentUrl.includes(aem_cloud_stage)) {
+    environment = "Cloud Stage";
+  } else if (currentUrl.includes(aem_cloud_prod)) {
+    environment = "Cloud Prod";
   }
   return environment;
 }
@@ -523,13 +570,13 @@ function getFlavour() {
   const url = window.location.href;
   let ret = "";
 
-  if (url.includes(adminFlavour)) {
+  if (url.includes(legacy_admin_flavour)) {
     ret = "Admin";
-  } else if (url.includes(editorFlavour)) {
+  } else if (url.includes(legacy_editor_flavour)) {
     ret = "Editor";
-  } else if (url.includes(assetsFlavour)) {
+  } else if (url.includes(legacy_assets_flavour)) {
     ret = "Assets";
-  } else if (url.includes(experienceFragmentsFlavour)) {
+  } else if (url.includes(legacy_experience_fragments_flavour)) {
     ret = "Experience Fragments";
   } else {
     ret = "Vap";

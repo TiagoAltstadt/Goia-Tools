@@ -229,7 +229,7 @@
 #goiaToolsBody .component button {
   margin: 2px;
   padding: 5px 10px;
-  width: fit-content;
+  width: 33%;
   font-size: 0.9em;
 }
 

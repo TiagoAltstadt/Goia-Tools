@@ -16,27 +16,36 @@
 const protocol = "https://";
 
 // Environments
-let stageDomain = "";
-let prodDomain = "";
-let devDomain = "";
+let legacy_stage_domain = "";
+let legacy_prod_domain = "";
+let legacy_dev_domain = "";
 
 // Flavours
-let assetsFlavour = "";
-let experienceFragmentsFlavour = "";
-let adminFlavour = "";
-let editorFlavour = "";
+let legacy_assets_flavour = "";
+let legacy_experience_fragments_flavour = "";
+let legacy_admin_flavour = "";
+let legacy_editor_flavour = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   loadBasicUrlsFromStorage().then((basicUrls) => {
     if (basicUrls) {
       // declaring global variables
-      prodDomain = basicUrls.prod_domain;
-      stageDomain = basicUrls.stage_domain;
-      devDomain = basicUrls.dev_domain;
-      assetsFlavour = basicUrls.assets_flavour;
-      experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
-      adminFlavour = basicUrls.admin_flavour;
-      editorFlavour = basicUrls.editor_flavour;
+
+      // Cloud URL's
+      aem_cloud_main = basicUrls.aem_cloud_main;
+      aem_cloud_target = basicUrls.aem_cloud_target;
+      aem_cloud_base = basicUrls.aem_cloud_base;
+      aem_cloud_stage = basicUrls.aem_cloud_stage;
+      aem_cloud_dev = basicUrls.aem_cloud_dev;
+      aem_cloud_prod = basicUrls.aem_cloud_prod;
+
+      legacy_prod_domain = basicUrls.legacy_prod_domain;
+      legacy_stage_domain = basicUrls.legacy_stage_domain;
+      legacy_dev_domain = basicUrls.legacy_dev_domain;
+      legacy_assets_flavour = basicUrls.legacy_assets_flavour;
+      legacy_experience_fragments_flavour = basicUrls.legacy_experience_fragments_flavour;
+      legacy_admin_flavour = basicUrls.legacy_admin_flavour;
+      legacy_editor_flavour = basicUrls.legacy_editor_flavour;
       loadDataFromStorage();
       setupEventListeners();
 
@@ -69,16 +78,64 @@ function initializeListeners() {
     .querySelector("#experienceFragmentsButton")
     .addEventListener("click", () => {
       window.open(
-        protocol + stageDomain + experienceFragmentsFlavour.replace(/.$/, ""),
+        protocol + legacy_stage_domain + legacy_experience_fragments_flavour.replace(/.$/, ""),
         "_blank"
       );
     });
 
   document.querySelector("#assetsButton").addEventListener("click", () => {
     window.open(
-      protocol + stageDomain + assetsFlavour.replace(/.$/, ""),
+      protocol + legacy_stage_domain + legacy_assets_flavour.replace(/.$/, ""),
       "_blank"
     );
+  });
+
+  // Legacy Stuff
+  document.querySelector("#legacy_prod").addEventListener("click", () => {
+    window.open(
+      protocol + legacy_prod_domain + 'aem/start.html',
+      "_blank"
+    );
+  });
+  document.querySelector("#legacy_stage").addEventListener("click", () => {
+    window.open(
+      protocol + legacy_stage_domain + 'aem/start.html',
+      "_blank"
+    );
+  });
+  document.querySelector("#legacy_dev").addEventListener("click", () => {
+    window.open(
+      protocol + legacy_dev_domain,
+      "_blank"
+    );
+  });
+  // Cloud Stuff
+  document.querySelector("#cloud_dev").addEventListener("click", () => {
+    window.open(
+      protocol + aem_cloud_dev + aem_cloud_base + "start.html",
+      "_blank"
+    );
+  });
+  document.querySelector("#cloud_stage").addEventListener("click", () => {
+    window.open(
+      protocol + aem_cloud_stage + aem_cloud_base + "start.html",
+      "_blank"
+    );
+  });
+  document.querySelector("#cloud_prod").addEventListener("click", () => {
+    window.open(
+      protocol + aem_cloud_prod + aem_cloud_base + "start.html",
+      "_blank"
+    );
+  });
+  document.querySelector("#cloud_main").addEventListener("click", () => {
+    window.open(
+      protocol + aem_cloud_main + "/home.html/program/128518 ",
+      "_blank"
+    );
+  });
+  document.querySelector("#cloud_target").addEventListener("click", () => {
+    window.open(protocol + aem_cloud_target, "_blank");
   });
 }
 
@@ -163,36 +220,36 @@ function createButtonContainer(component) {
     Admin: [
       {
         id: "Prod",
-        url: protocol + prodDomain + adminFlavour + component.aem_path,
+        url: protocol + legacy_prod_domain + legacy_admin_flavour + component.aem_path,
       },
       {
         id: "Stage",
-        url: protocol + stageDomain + adminFlavour + component.aem_path,
+        url: protocol + legacy_stage_domain + legacy_admin_flavour + component.aem_path,
       },
     ],
     Editor: [
       {
         id: "Prod",
         url:
-          protocol + prodDomain + editorFlavour + component.aem_path + ".html",
+          protocol + legacy_prod_domain + legacy_editor_flavour + component.aem_path + ".html",
       },
       {
         id: "Stage",
         url:
-          protocol + stageDomain + editorFlavour + component.aem_path + ".html",
+          protocol + legacy_stage_domain + legacy_editor_flavour + component.aem_path + ".html",
       },
     ],
     VAP: [
       {
         id: "Prod",
         url:
-          protocol + prodDomain + component.aem_path + ".html?wcmmode=disabled",
+          protocol + legacy_prod_domain + component.aem_path + ".html?wcmmode=disabled",
       },
       {
         id: "Stage",
         url:
           protocol +
-          stageDomain +
+          legacy_stage_domain +
           component.aem_path +
           ".html?wcmmode=disabled",
       },
@@ -365,7 +422,6 @@ async function saveEdit(component, form) {
     return comp; // Ensure `comp` is returned from `map`
   });
 
-
   saveComponentsToStorage(updatedComponents);
 
   form.remove();
@@ -432,7 +488,7 @@ function saveComponentsToStorage(data) {
   const indexedData = data.map((element, index) => {
     return {
       ...element,
-      id: index + 1 // or use `index` if you want to start from 0
+      id: index + 1, // or use `index` if you want to start from 0
     };
   });
 
@@ -445,13 +501,13 @@ function saveBasicUrlsToStorage(basicUrls) {
   chrome.storage.local.set({ basicUrls }, () => {
     console.log("Basic URLs successfully saved to storage.");
   });
-  prodDomain = basicUrls.prod_domain;
-  stageDomain = basicUrls.stageDomain;
-  devDomain = basicUrls.devDomain;
-  assetsFlavour = basicUrls.assets_flavour;
-  experienceFragmentsFlavour = basicUrls.experience_fragments_flavour;
-  adminFlavour = basicUrls.admin_flavour;
-  editorFlavour = basicUrls.editor_flavour;
+  legacy_prod_domain = basicUrls.legacy_prod_domain;
+  legacy_stage_domain = basicUrls.legacy_stage_domain;
+  legacy_dev_domain = basicUrls.legacy_dev_domain;
+  legacy_assets_flavour = basicUrls.legacy_assets_flavour;
+  legacy_experience_fragments_flavour = basicUrls.legacy_experience_fragments_flavour;
+  legacy_admin_flavour = basicUrls.legacy_admin_flavour;
+  legacy_editor_flavour = basicUrls.legacy_editor_flavour;
 }
 // Loading Data
 async function loadComponentsFromStorage() {
